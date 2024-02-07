@@ -9302,7 +9302,7 @@ unsigned __stdcall RunExe(void *)
 															}
 															else
 															{
-																thisSWBP = 4;
+																thisSWBP = 16;
 																SWBPExceptionAddress[8] = PvoidRead;
 																// reset this SWBP
 																if (!SetPseudoSingleStep(childhProcess))
@@ -10110,7 +10110,7 @@ unsigned __stdcall RunExe(void *)
 													pszBaseName = szModName;  // No path.  Use the same name for both
 												}
 												//Is this module we are looking for
-												if (strcmp((const char *)strupr((char *)pszBaseName), (const char*)strupr(pszDllName)) == 0)
+												if (_stricmp(pszBaseName, pszDllName) == 0)
 												{
 													// Save some addresses
 													BaseOfImage = hDllModule;
@@ -10847,6 +10847,26 @@ unsigned __stdcall RunExe(void *)
 				dwContinueStatus = DBG_CONTINUE;
 				// close handle to load dll event
 				CloseHandle(DebugEv.u.LoadDll.hFile);
+				// Prevent Apphelp from loading so import reconstruction works.
+				if (DebugEv.u.LoadDll.lpImageName && DebugEv.u.LoadDll.fUnicode)
+				{
+					ReadProcessMemory(pi.hProcess, DebugEv.u.LoadDll.lpImageName, &PvoidRead, 4, &dwRead);
+					if (PvoidRead)
+					{
+						WCHAR buf[MAX_PATH];
+						ReadProcessMemory(pi.hProcess, PvoidRead, buf, sizeof(buf), &dwRead);
+						DWORD len = wcslen(buf);
+						if (len > 11 && !_wcsicmp(buf + len - 11, L"apphelp.dll"))
+						{
+							LogItem("Blocking Apphelp");
+							char hdr[4096];
+							ReadProcessMemory(pi.hProcess, DebugEv.u.LoadDll.lpBaseOfDll, hdr, sizeof(hdr), &dwRead);
+							PIMAGE_OPTIONAL_HEADER pImgOptHdr = (PIMAGE_OPTIONAL_HEADER)OPTHDROFFSET(hdr);
+							PvoidAddr = (PVOID)((DWORD_PTR)DebugEv.u.LoadDll.lpBaseOfDll + pImgOptHdr->AddressOfEntryPoint);
+							WriteProcessMemory(pi.hProcess, PvoidAddr, "\x33\xc0\xc2\x0c", 5, &dwWritten);
+						}
+					}
+				}
 				break;
 
 			case UNLOAD_DLL_DEBUG_EVENT:
