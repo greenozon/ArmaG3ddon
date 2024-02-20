@@ -1228,7 +1228,7 @@ int ArmNF_WriteTableToFile(void)
 	iArmNF = WriteTableToFile(nanobuffer);
 	if (iArmNF == 0)
 	{
-		LogItem("%ul nanomites saved...", NFlog.TRN);
+		LogItem("%lu nanomites saved...", NFlog.TRN);
 		LogItem("Done.");
 	}
 	return iArmNF;
@@ -4970,7 +4970,7 @@ BOOL DisassembleDump(void)
 
 DISDONE:
 	logitemreplace = TRUE;
-	LogItem("%s potential nanomites...", pNumNanos);
+	LogItem("%lu potential nanomites...", (DWORD)pNumNanos);
 	if (hFile5)
 	{
 		CloseHandle(hFile5);
