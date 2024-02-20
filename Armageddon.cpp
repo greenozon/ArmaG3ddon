@@ -4345,55 +4345,28 @@ void CreateDump(HANDLE thisProcess, int dumparmvm)
 	}
 	LogItem("%s", isep);
 	LogItem("Rebuilding Imports...");
-	if (debugblocker)
+	DWORD imppid = (debugblocker) ? childpid : DebugEv.dwProcessId;
+	if (checkminimizesize)
 	{
-		if (checkminimizesize)
+		LogItem("Rebuilding Sections...");
+		MSretn = DoRebuildSectionsFromArmadillo();
+		if (MSretn == 0)
 		{
-			LogItem("Rebuilding Sections...");
-			MSretn = DoRebuildSectionsFromArmadillo();
-			if (MSretn == 0)
+			// Get the optimized file name returned from above function
+			MSretn = GetNameFileOptimized(savebuffer, gnfobuffer);
+			if (MSretn > 0)
 			{
-				// Get the optimized file name returned from above function
-				MSretn = GetNameFileOptimized(savebuffer, gnfobuffer);
-				if (MSretn > 0)
-				{
-					IRretn = DoSearchAndRebuildImportsNoNewSection(childpid);
-				}
-				else
-				{
-					LogItem("function: GetNameFileOptimized Error!");
-				}
+				IRretn = DoSearchAndRebuildImportsNoNewSection(imppid);
 			}
-		}
-		else
-		{
-			IRretn = DoSearchAndRebuildImports(childpid);
+			else
+			{
+				LogItem("function: GetNameFileOptimized Error!");
+			}
 		}
 	}
 	else
 	{
-		if (checkminimizesize)
-		{
-			LogItem("Rebuilding Sections...");
-			MSretn = DoRebuildSectionsFromArmadillo();
-			if (MSretn == 0)
-			{
-				// Get the optimized file name returned from above function
-				MSretn = GetNameFileOptimized(savebuffer, gnfobuffer);
-				if (MSretn > 0)
-				{
-					IRretn = DoSearchAndRebuildImportsNoNewSection(DebugEv.dwProcessId);
-				}
-				else
-				{
-					LogItem("function: GetNameFileOptimized Error!");
-				}
-			}
-		}
-		else
-		{
-			IRretn = DoSearchAndRebuildImports(DebugEv.dwProcessId);
-		}
+		IRretn = DoSearchAndRebuildImports(imppid);
 	}
 	if (autorun && IRretn == 0)
 		autorun = 2;
