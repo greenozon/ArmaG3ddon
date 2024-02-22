@@ -165,7 +165,6 @@ char		copybuffer[MAX_PATH] = { 0 };
 char		logbuffer[MAX_PATH] = { 0 };
 char		cmdbuffer[MAX_PATH] = { 0 };
 char		sztempbuffer[1024] = { 0 };
-char		nbufrwb32[MAX_PATH] = { 0 };
 char		dbuffer[MAX_PATH] = { 0 };
 char		nbuf[MAX_PATH] = { 0 };
 char		dbuf[MAX_PATH] = { 0 };
@@ -671,7 +670,7 @@ the PEFILE header exists just after that dword              */
 			 ((PIMAGE_DOS_HEADER)a)->e_lfanew    +	\
 			 SIZE_OF_NT_SIGNATURE		     +	\
 			 sizeof (IMAGE_FILE_HEADER)))
-IMAGE_DATA_DIRECTORY DataDirectory[IMAGE_NUMBEROF_DIRECTORY_ENTRIES];
+//IMAGE_DATA_DIRECTORY DataDirectory[IMAGE_NUMBEROF_DIRECTORY_ENTRIES];
 // Directory Entries [INDEX] BELOW:
 #define IMAGE_DIRECTORY_ENTRY_EXPORT          0   // Export Directory
 #define IMAGE_DIRECTORY_ENTRY_IMPORT          1   // Import Directory
@@ -698,7 +697,6 @@ IMAGE_DATA_DIRECTORY DataDirectory[IMAGE_NUMBEROF_DIRECTORY_ENTRIES];
 			 sizeof (IMAGE_OPTIONAL_HEADER)))
 //  Detach related
 BYTE		ebfebytes[4] = { 0xEB, 0xFE, 0x90, 0x90 };
-DWORD		securityentry = 0;
 HMODULE 	hModule = 0;
 HMODULE 	hDllModule = 0;
 FARPROC		ProcAddr0 = { 0 };
@@ -7224,7 +7222,6 @@ void InitializeVariables(void)
 	memset(logbuffer, 0, sizeof(MAX_PATH));
 	memset(cmdbuffer, 0, sizeof(MAX_PATH));
 	memset(sztempbuffer, 0, sizeof(sztempbuffer));
-	memset(nbufrwb32, 0, sizeof(MAX_PATH));
 	memset(nbuf, 0, sizeof(MAX_PATH));
 	memset(dbuf, 0, sizeof(MAX_PATH));
 	memset(Filename, 0, sizeof(MAX_PATH));
@@ -7468,7 +7465,6 @@ void InitializeVariables(void)
 	memset(Asm, 0, sizeof(TEXTLEN));
 	Spliced = 0;
 	Target = 0;
-	securityentry = 0;
 	hModule = 0;
 	hDllModule = 0;
 	ProcAddr0 = 0;
