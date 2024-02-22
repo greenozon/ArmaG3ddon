@@ -11063,13 +11063,13 @@ LRESULT CALLBACK CommandProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lPara
 /* About dialog function */
 LRESULT CALLBACK AboutProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-	char aboutbuf[2048] = "ArmaGeddon V2.3 (final) - ARTeam\n"
-		"Release - December 2020\n"
+	char aboutbuf[2048] = "ArmaGeddon V2.3.1 - ARTeam\n"
+		"Release - February 2024\n"
 		"CondZero: Contributing editor\n"
 		"SSlEvIN: GFX support\n"
 		"Ghandi: Dll Loader.exe (dll support) +\n"
 		"Invaluable support on technical issues\n"
-		"Nacho_dj: ARTeam Import Reconstructor 1.8.0 Beta +\n"
+		"Nacho_dj: ARTeam Import Reconstructor 1.8.1 +\n"
 		"Minimize PE size and overlay generation engine\n"
 		"Admiral: Remove code Splicing engine\n"
 		"Authors and Contributors: BeaEngine.dll\n"
