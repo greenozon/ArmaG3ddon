@@ -642,6 +642,9 @@ LPVOID	OEPVAddress = { 0x00000000 };			// Module OEP virtual address
 LPVOID	OEPDelphiRVAddress = { 0x00000000 };	// Module PE header 2nd .itext section OEP address
 LPVOID	OEPDelphiVAddress = { 0x00000000 };	// Module PE header 2nd .itext section OEP address
 PBYTE 	g_pMappedFileBase = 0;				// Pointer to Virtual Memory Address of Base Module
+#define SECURITYBUFFERSIZE 64
+char	SecurityBuffer[SECURITYBUFFERSIZE] = { 0 }; 	// First bytes of the certificate
+DWORD	SecuritySize = 0;					// Size of the certificate
 PIMAGE_DOS_HEADER 		dosHeader;
 PIMAGE_FILE_HEADER 		pImgFileHdr;
 PIMAGE_OPTIONAL_HEADER 	pImgOptHdr;
@@ -4056,6 +4059,12 @@ DONE:
 		pImgOptHdr->DataDirectory[IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT].VirtualAddress = 0x00000000;
 		pImgOptHdr->DataDirectory[IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT].Size = 0x00000000;
 	}
+	if (pImgOptHdr->DataDirectory[IMAGE_DIRECTORY_ENTRY_SECURITY].VirtualAddress > 0x00000000)
+	{
+		SetFilePointer(hFile1, pImgOptHdr->DataDirectory[IMAGE_DIRECTORY_ENTRY_SECURITY].VirtualAddress, NULL, FILE_BEGIN);
+		ReadFile(hFile1, SecurityBuffer, SECURITYBUFFERSIZE, &dwRead, NULL);
+		SecuritySize = pImgOptHdr->DataDirectory[IMAGE_DIRECTORY_ENTRY_SECURITY].Size;
+	}
 	dwSize = pImgOptHdr->SizeOfImage;
 	CloseHandle(hFile1);
 	hFile1 = 0;
@@ -4354,6 +4363,27 @@ void CreateDump(HANDLE thisProcess, int dumparmvm)
 			MSretn = GetNameFileOptimized(savebuffer, gnfobuffer);
 			if (MSretn > 0)
 			{
+				// Minimizing may put back the certificate, remove it again
+				if (SecuritySize)
+				{
+					hFile = CreateFile((LPCSTR)gnfobuffer, // file to create
+						GENERIC_READ | GENERIC_WRITE,		  // open for read/write
+						FILE_SHARE_READ | FILE_SHARE_WRITE,   // share
+						NULL,				// default security
+						OPEN_EXISTING,		// overwrite existing
+						FILE_ATTRIBUTE_NORMAL, // normal file
+						NULL);				// no attr. template
+					char tmp[64];
+					SetFilePointer(hFile, -SecuritySize, NULL, FILE_END);
+					ReadFile(hFile, tmp, SECURITYBUFFERSIZE, &dwRead, NULL);
+					if (memcmp(tmp, SecurityBuffer, SECURITYBUFFERSIZE) == 0)
+					{
+						SetFilePointer(hFile, -SecuritySize, NULL, FILE_END);
+						SetEndOfFile(hFile);
+					}
+					CloseHandle(hFile);
+					hFile = 0;
+				}
 				IRretn = DoSearchAndRebuildImportsNoNewSection(imppid);
 			}
 			else
@@ -7455,6 +7485,8 @@ void InitializeVariables(void)
 	OEPDelphiVAddress = 0;
 	OEPDelphiRVAddress = 0;
 	g_pMappedFileBase = 0;
+	memset(SecurityBuffer, 0, SECURITYBUFFERSIZE);
+	SecuritySize = 0;
 	FuckedUp = FALSE;
 	SStart = 0;
 	TStart = 0;
