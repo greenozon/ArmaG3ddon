@@ -139,11 +139,11 @@ END
 // Bitmap
 //
 
-IDB_OPEN                BITMAP                  "Armadillo.bmp"
-IDB_HELP                BITMAP                  "Help-Question-Mark.bmp"
-IDB_REFRESH             BITMAP                  "refresh.bmp"
-IDB_OPENGRAY            BITMAP                  "Armadillo_gray.bmp"
-IDB_CREDIT              BITMAP                  "Armageddon_small.bmp"
+IDB_OPEN                IMAGE                   "Armadillo.jpg"
+IDB_HELP                IMAGE                   "Help-Question-Mark.jpg"
+IDB_REFRESH             IMAGE                   "refresh.jpg"
+IDB_OPENGRAY            IMAGE                   "Armadillo_gray.jpg"
+IDB_CREDIT              IMAGE                   "Armageddon_small.jpg"
 
 /////////////////////////////////////////////////////////////////////////////
 //

@@ -42,9 +42,6 @@
 // GDI+
 Gdiplus::GdiplusStartupInput	m_gdiplusStartupInput;
 ULONG_PTR	m_gdiplusToken = 0;
-Gdiplus::Bitmap *newbmp = 0;
-Gdiplus::Bitmap *oldbmp = 0;
-Gdiplus::Graphics *gr = 0;
 HBITMAP newgdibmp = 0;
 HBITMAP newgrybmp = 0;
 HBITMAP newaboutbmp = 0;
@@ -105,11 +102,6 @@ HWND		hwndB = NULL;
 HWND		hwndList = NULL;
 HWND		hwndCtrl = NULL;
 HWND		hwndIDLISTVIEW = NULL;
-HBITMAP		hBitmap01 = NULL;
-HBITMAP		hBitmap02 = NULL;
-HBITMAP		hBitmap03 = NULL;
-HBITMAP		hBitmap04 = NULL;
-HBITMAP		hBitmap05 = NULL;	// Dialog bitmaps
 HDC  		hDC = NULL;
 HDC  		hdcStatic = NULL;		// Device context
 BITMAP 		info = { 0 };
@@ -10984,6 +10976,28 @@ void InitScaling(void)
 	ReleaseDC(0, hDC);
 	return;
 }
+// Resize an image resource to fit a window.
+void ResizeBitmap(HWND hwnd, int iimg, HBITMAP *phnewbmp)
+{
+	// Get the window's size
+	GetClientRect(hwnd, &Rect);
+	Gdiplus::Bitmap *newbmp = new Gdiplus::Bitmap(Rect.right, Rect.bottom, PixelFormat32bppPARGB);
+	Gdiplus::Graphics *gr = new Gdiplus::Graphics(newbmp);
+	HRSRC hrsrc = FindResource(hinst, MAKEINTRESOURCE(iimg), "IMAGE");
+	HGLOBAL grsrc = LoadResource(hinst, hrsrc);
+	LPVOID mem = LockResource(grsrc);
+	LPSTREAM strm = NULL;
+	CreateStreamOnHGlobal(NULL, TRUE, &strm);
+	strm->Write(mem, SizeofResource(hinst, hrsrc), NULL);
+	Gdiplus::Bitmap *oldbmp = (Gdiplus::Bitmap *)Gdiplus::Bitmap::FromStream(strm);
+	strm->Release();
+	gr->Graphics::DrawImage(oldbmp, 0, 0, Rect.right, Rect.bottom);
+	// Creates a gdi bitmap from gdi+
+	newbmp->Bitmap::GetHBITMAP(Gdiplus::Color(0, 0, 0, 0), phnewbmp);
+	delete gr;
+	delete newbmp;
+	delete oldbmp;
+}
 // Create our main dialog box
 int APIENTRY WinMain(HINSTANCE hinst, HINSTANCE hinstPrev, LPSTR lpCmdLine, int nCmdShow)
 {
@@ -11097,20 +11111,7 @@ LRESULT CALLBACK AboutProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 			SendMessage(hwnd, WM_SETFONT, (WPARAM)hFont, 0);
 			hwnd = GetWindow(hwnd, GW_HWNDNEXT);
 		}
-		//  Get the About RECT size
-		GetClientRect(hwndB, &Rect);
-		newbmp = new Gdiplus::Bitmap(Rect.right, Rect.bottom, PixelFormat32bppPARGB);
-		gr = new Gdiplus::Graphics(newbmp);
-		oldbmp = (Gdiplus::Bitmap *)Gdiplus::Bitmap::FromHBITMAP(hBitmap02, NULL);
-		gr->Graphics::DrawImage(oldbmp, 0, 0, Rect.right, Rect.bottom);
-		// Creates a gdi bitmap from gdi+
-		newbmp->Bitmap::GetHBITMAP(Gdiplus::Color(0, 0, 0, 0), &newcreditbmp);
-		delete gr;
-		delete newbmp;
-		delete oldbmp;
-		gr = 0;
-		newbmp = 0;
-		oldbmp = 0;
+		ResizeBitmap(hwndB, IDB_CREDIT, &newcreditbmp);
 		SendMessage(hwndB, BM_SETIMAGE, (WPARAM)IMAGE_BITMAP, (LPARAM)newcreditbmp);
 	}
 		return TRUE;
@@ -11391,82 +11392,14 @@ LRESULT CALLBACK DialogProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam
 		lvi.iSubItem = 0;
 		lvi.lParam = 1;
 		lvi.iImage = 0;
-		// Load our bitmaps
-		hBitmap01 = LoadBitmap(hinst, MAKEINTRESOURCE(IDB_OPEN));
-		hBitmap02 = LoadBitmap(hinst, MAKEINTRESOURCE(IDB_CREDIT));
-		hBitmap03 = LoadBitmap(hinst, MAKEINTRESOURCE(IDB_HELP));
-		hBitmap04 = LoadBitmap(hinst, MAKEINTRESOURCE(IDB_REFRESH));
-		hBitmap05 = LoadBitmap(hinst, MAKEINTRESOURCE(IDB_OPENGRAY));
-		//Size bitmaps to window OPEN control
-		//  Get the Open RECT size
-		GetClientRect(hwnd01, &Rect);
 		// START GDI+ SUB SYSTEM
 		Gdiplus::GdiplusStartup(&m_gdiplusToken, &m_gdiplusStartupInput, NULL);
-		newbmp = new Gdiplus::Bitmap(Rect.right, Rect.bottom, PixelFormat32bppPARGB);
-		gr = new Gdiplus::Graphics(newbmp);
-		oldbmp = (Gdiplus::Bitmap *)Gdiplus::Bitmap::FromHBITMAP(hBitmap01, NULL);
-		Gdiplus::Rect destrec(0, 0, Rect.right, Rect.bottom);
-		gr->Graphics::DrawImage(oldbmp, destrec, 0, 0, oldbmp->GetWidth(), oldbmp->GetHeight(), Gdiplus::UnitPixel);
-		// Creates a gdi bitmap from gdi+
-		newbmp->Bitmap::GetHBITMAP(Gdiplus::Color(0, 0, 0, 0), &newgdibmp);
-		delete gr;
-		delete oldbmp;
-		//-------------------------------------------------//
-		gr = new Gdiplus::Graphics(newbmp);
-		oldbmp = (Gdiplus::Bitmap *)Gdiplus::Bitmap::FromHBITMAP(hBitmap05, NULL);
-		gr->Graphics::DrawImage(oldbmp, destrec, 0, 0, oldbmp->GetWidth(), oldbmp->GetHeight(), Gdiplus::UnitPixel);
-		newbmp->Bitmap::GetHBITMAP(Gdiplus::Color(0, 0, 0, 0), &newgrybmp);
-		delete gr;
-		delete newbmp;
-		delete oldbmp;
-		gr = 0;
-		newbmp = 0;
-		oldbmp = 0;
-		//  Get the Refresh RECT size
-		GetClientRect(hwnd32, &Rect);
-		newbmp = new Gdiplus::Bitmap(Rect.right, Rect.bottom, PixelFormat32bppPARGB);
-		gr = new Gdiplus::Graphics(newbmp);
-		oldbmp = (Gdiplus::Bitmap *)Gdiplus::Bitmap::FromHBITMAP(hBitmap04, NULL);
-		Gdiplus::Rect destrec2(0, 0, Rect.right, Rect.bottom);
-		gr->Graphics::DrawImage(oldbmp, destrec2, 0, 0, oldbmp->GetWidth(), oldbmp->GetHeight(), Gdiplus::UnitPixel);
-		// Creates a gdi bitmap from gdi+
-		newbmp->Bitmap::GetHBITMAP(Gdiplus::Color(0, 0, 0, 0), &newrefreshbmp);
-		delete gr;
-		delete oldbmp;
-		delete newbmp;
-		gr = 0;
-		oldbmp = 0;
-		newbmp = 0;
-		//  Get the Help RECT size
-		GetClientRect(hwnd31, &Rect);
-		newbmp = new Gdiplus::Bitmap(Rect.right, Rect.bottom, PixelFormat32bppPARGB);
-		gr = new Gdiplus::Graphics(newbmp);
-		oldbmp = (Gdiplus::Bitmap *)Gdiplus::Bitmap::FromHBITMAP(hBitmap03, NULL);
-		Gdiplus::Rect destrec3(0, 0, Rect.right, Rect.bottom);
-		gr->Graphics::DrawImage(oldbmp, destrec3, 0, 0, oldbmp->GetWidth(), oldbmp->GetHeight(), Gdiplus::UnitPixel);
-		// Creates a gdi bitmap from gdi+
-		newbmp->Bitmap::GetHBITMAP(Gdiplus::Color(0, 0, 0, 0), &newhelpbmp);
-		delete gr;
-		delete oldbmp;
-		delete newbmp;
-		gr = 0;
-		oldbmp = 0;
-		newbmp = 0;
-		//  Get the About RECT size
-		GetClientRect(hwnd02, &Rect);
-		newbmp = new Gdiplus::Bitmap(Rect.right, Rect.bottom, PixelFormat32bppPARGB);
-		gr = new Gdiplus::Graphics(newbmp);
-		oldbmp = (Gdiplus::Bitmap *)Gdiplus::Bitmap::FromHBITMAP(hBitmap02, NULL);
-		Gdiplus::Rect destrec1(0, 0, Rect.right, Rect.bottom);
-		gr->Graphics::DrawImage(oldbmp, destrec1, 0, 0, oldbmp->GetWidth(), oldbmp->GetHeight(), Gdiplus::UnitPixel);
-		// Creates a gdi bitmap from gdi+
-		newbmp->Bitmap::GetHBITMAP(Gdiplus::Color(0, 0, 0, 0), &newaboutbmp);
-		delete gr;
-		delete oldbmp;
-		delete newbmp;
-		gr = 0;
-		oldbmp = 0;
-		newbmp = 0;
+		// Create bitmaps to fit the various controls
+		ResizeBitmap(hwnd01, IDB_OPEN, &newgdibmp);
+		ResizeBitmap(hwnd01, IDB_OPENGRAY, &newgrybmp);
+		ResizeBitmap(hwnd32, IDB_REFRESH, &newrefreshbmp);
+		ResizeBitmap(hwnd31, IDB_HELP, &newhelpbmp);
+		ResizeBitmap(hwnd02, IDB_CREDIT, &newaboutbmp);
 		SendMessage(hwnd01, BM_SETIMAGE, (WPARAM)IMAGE_BITMAP, (LPARAM)newgdibmp);
 		SendMessage(hwnd02, BM_SETIMAGE, (WPARAM)IMAGE_BITMAP, (LPARAM)newaboutbmp);
 		SendMessage(hwnd31, BM_SETIMAGE, (WPARAM)IMAGE_BITMAP, (LPARAM)newhelpbmp);
@@ -12194,16 +12127,6 @@ LRESULT CALLBACK DialogProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam
 		break;
 
 	case WM_DESTROY:
-		if (hBitmap01)
-			DeleteObject(hBitmap01);
-		if (hBitmap02)
-			DeleteObject(hBitmap02);
-		if (hBitmap03)
-			DeleteObject(hBitmap03);
-		if (hBitmap04)
-			DeleteObject(hBitmap04);
-		if (hBitmap05)
-			DeleteObject(hBitmap05);
 		if (newgdibmp)
 			DeleteObject(newgdibmp);
 		if (newgrybmp)
