@@ -1,0 +1,249 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><head>
+<title>Version History</title>
+
+<META content="text/html; charset=iso-8859-1" http-equiv=Content-Type>
+<META name=GENERATOR content="MSHTML 8.00.6001.18975"></HEAD>
+<BODY>
+<P><STRONG>Version History</STRONG></P>
+<P>Current Release February 2024 v2.3.1<BR>
++ Blocked Apphelp.dll from loading, allowing imports to be reconstructed without using Sandboxie.<BR>
++ Fixed crash after nanomite static analysis.<BR>
++ Removed the certificate when minimizing.<BR>
++ Updated Arteam Import Reconstructor (Nacho_dj) version 1.8.1 Updated 2024 February<BR>
+Includes:<BR>
++ Fixed bug when rebuilding export table in minimized files<BR>
++ Completed recovering of PE header directories data in minimized files<BR>
+December 2020 v2.3 final<BR>
++ Restored WinXP support and added support for Win 10.<BR>
++ Improved logging.<BR>
++ Fixed OEP sometimes being missed.<BR>
++ Pass a file name on the command line to run automatically.<BR>
++ Open the help file from the same directory as the exe.<BR>
+November 2014 v2.2 final<BR>
++ New BeaEngine.dll replaces RDisasm.dll for disassembling instructions.<BR>
++ Win 7 support 32 bit applications.<BR>
++ Window Caption (EnumWindows) Hide Window Support provided automatically.<BR>
++ Armadillo Version support has been removed.<BR>
++ Updated Arteam Import Reconstructor (Nacho_dj) version 1.8.0 Beta Updated 2014 February<BR>
+Includes:<BR>
++ Fixed bug related to PE header when rebuilding in Windows7<BR>
++ Fixed bug about renaming dumped file<BR>
++ Fixed bugs in GetProcOrdinal, GetProcName and GetProcAndName functions<BR>
+==========================================================<BR>
+February 2014 v2.1<BR>
++ Fix problem in reading *.dll file<BR>
+==========================================================<BR>
+December 2013 v2.0<BR>
++ This will be the last release to support WinXP. Due to system internals
+and compatibility issues, a separate release for Win 7 will be supported.<BR>
++ Numerous updates and minor bug fixes for newest Armadillo versions.<BR>
++ Upgrade nanolib.dll for compatibility with Armageddon.<BR>
++ Remove Peid dll as it was no longer required.<BR>
++ Improved nanomites and spliced code static analysis via new disassembler
+engine from Vanja Fuckar (RDisasm.dll).<BR>
++ New interactive Security.dll dump / load options for unpacking / testing.<BR>
++ Improved import redirection algorithm.<BR>
++ New built in Nanomite viewer option for viewing analyzed nanomites.<BR>
++ Add context menu for Log window.<BR>
++ Removed some legacy functionality / options. This
+version is not backwards compatible with previous versions.<BR>
++ Updated Arteam Import Reconstructor (Nacho_dj) version 1.7.8 Updated 2013 June<BR>
+Includes:<BR>
++ Improved performance of the search engine for imports<BR>
++ Updated the overlay generation engine<BR>
++ Fixed some bugs when analyzing code sections for imports<BR>
++ Fixed a bug in import rebuilder when forwarding<BR>
++ Added an exported function: TryGetImportedFunctionName<BR>
++ Improved code for retrieving imports<BR>
++ Improved sorting of imported functions and dlls by name<BR>
++ Fixed an issue with rebuilding by relocations when module is loaded at a
+different virtual address than imagebase<BR>
++ Fixed bugs when rebuilding without modifying any code<BR>
+==========================================================<BR>
+November 2010 v1.9<BR>
++ Windows 7 32 bit compatability<BR>
++ Display actual version info [tested back to v5.42]<BR>
++ Option to turn Window Caption on / off as needed<BR>
++ Drag and Drop support<BR>
++ New option dialog "Cmdline" for accepting and processing any
+commandline arguments for a target executable<BR>
++ Minor updates and bug fixes for newest Armadillo versions<BR>
++ Updated Arteam Import Reconstructor (Nacho_dj) version 1.7.5 Updated 2010 November<BR>
+Includes:<BR>
++ Fixed rebuilding of sections for minimized MinGW compiled executables<BR>
++ Added an exported function for rebuilding imports without modifying code<BR>
++ Improved detection of possible code sections<BR>
++ Removed the backup of rebuilt file<BR>
++ Improved relocations analysis and rebuilding performance<BR>
++ Improved extraction of files of pdata section<BR>
++ Improved rebuilding of overlay for big ones<BR>
++ Fixed a bug for import table bigger than the section where it should lay<BR>
++ Fixed a bug when realigning sections<BR>
++ Fixed an error when rebuilding overlay<BR>
++ Fixed several bugs for relocations, imports retrieving and minimize size option<BR>
++ Added support for newest Armadillo versions<BR>
++ New algo for rebuilding overlay<BR>
++ Decryption of some files within pdata<BR>
++ Fixed several bugs<BR>
++ Updated Nanomites Fixer ArmNF.exe and ArmNF.dll v1.2 for analyzing / patching
+nanomites from NeVaDa<BR>
+==========================================================<BR>
+December 2009 v1.8<BR>
++ new internal Nanomites Fixer ArmNF.dll v1.0 for analyzing /
+patching nanomites from NeVaDa<BR>
++ new PEiDLL.dll v1.06 from Bob, "Powered by"
+PEiD v0.94 by snaker, Jibz &amp; Qwerton<BR>
++ updates to support ArmNF.dll and PEiDLL.dll<BR>
++ new group box to support the loading and saving of preconfigured
+option (initialization) files<BR>
++ fixed small problem with repairing nanos for minsize dump<BR>
++ fixed some problems associated with UPX<BR>
++ new bypass 2nd .text option<BR>
++ refinements to the OEP process for 2nd text section<BR>
++ use of copymemII option to detach bypasses dump messagebox<BR>
++ Updated Arteam Import Reconstructor (Nacho_dj) version 1.6.4 December 2009<BR>
+Includes:<BR>
++ An important bug fixed about IAT Size when rebuilding imports by relocations<BR>
++ Fixed a bug when rebuilding resources<BR>
++ Improved detection of overlay offset<BR>
++ Fixed rebuilding resources from other section than .rsrc<BR>
++ Fixed a bug when rebuilding imports by relocations<BR>
++ Added a new type of compiled to rebuild properly all sections<BR>
++ Added more possibilities to rebuild overlay<BR>
++ Improved detection of pdata section<BR>
++ Added some checks about PE header of dump<BR>
++ Fixed a bug when getting forwarded functions related to Wsock32.dll/ws2_32.dll<BR>
++ Fixed a bug that was destroying export table<BR>
++ Fixed a bug related to pointers for PE header names<BR>
++ Improved the rebuilding of sections and relocations for Delphi and Borland C++ targets<BR>
++ Recoded the Rebuild imports procedure to cover different compiled executables<BR>
++ Fixed a bug when rebuilding original IT for VC++ targets<BR>
++ Added support for UPX targets using overlay<BR>
++ Armadillo Nanomites Fixer v1.2 (public release) has been included into this<BR>
+distribution by NeVaDa<BR>
+UnReal-RCE<BR>
+Persian Crackers<BR>
+==========================================================<BR>
+September 2009 v1.7<BR>
++ Fixed a problem resolving PE section names<BR>
++ Updated Arteam Import Reconstructor (Nacho_dj) version 1.5.0 September 2009<BR>
+Includes:<BR>
++ New approach to get overlay offsets<BR>
+==========================================================<BR>
+July 2009 v1.6f (b)<BR>
++ Updated Arteam Import Reconstructor (Nacho_dj) version 1.4.6 July 2009<BR>
+Includes:<BR>
++ Fixed a bug when rebuilding imports by using relocations<BR>
++ Added overlay detection for newest version of Armadillo<BR>
+==========================================================<BR>
+July 2009 v1.6f (a)<BR>
++ Updated Arteam Import Reconstructor (Nacho_dj) version 1.4.5 July 2009<BR>
+Includes:<BR>
++ Fixed a couple of bugs when searching for any possible overlay<BR>
+==========================================================<BR>
+July 2009 v1.6f<BR>
++ new option to specifically exclude using the PE header section's
+2nd .text section for consideration in determining the OEP.<BR>
++ Updated Arteam Import Reconstructor (Nacho_dj) version 1.4.4 June 2009<BR>
+Includes:<BR>
++ Improved code when rebuilding imports using relocations data<BR>
++ Fixed bug when rebuilding imports using relocations data<BR>
+==========================================================<BR>
+March 2009 - v1.6 (We are now 1 year old)<BR>
++ fix some minor issues to improve stability<BR>
++ fix all known bugs<BR>
++ improved nanolib.dll (NeVaDa) for identifying nanos and determining JMP's.<BR>
+Improved efficiency, now totally externalized from Armageddon.<BR>
++ hide tool from PEB NTGlobalFlags<BR>
++ Window caption text replaced by a bitmap<BR>
++ improved Arteam Import Reconstructor v1.4.2 (Nacho_dj)<BR>
+Includes:<BR>
++ Fixed some bugs when rebuilding Visual Basic targets<BR>
++ Fixed a bug when rebuilding imports using relocations data<BR>
++ Added analysis of imports using relocations data<BR>
++ Fixed some bugs when rebuilding imports<BR>
++ Added support for zlib packed overlays<BR>
++ Improved rebuilding of imports, now based on relocations data, if they exist<BR>
++ Added rebuilding of VC++ 3.0 targets<BR>
++ Fixed rebuilding of Export Table<BR>
++ Improved the speed of processing imports, changed the way of accessing the data
+and the algorithms.<BR>
++ Improved the rebuilding of section names for Armadillo 6 when using MinimizeSection.<BR>
++ Fixed some bugs for overlay targets.<BR>
++ Admiral's new versions of the Nanoviewer tool and VEH loader v0.96ff (minor
+changes that were necessary to make the Nanomite handler Vista compatible.)<BR>
+==========================================================<BR>
+September 2008 - v1.5 / v1.5.1<BR>
++ minor updates to improve stability<BR>
++ fix problem with hardware fingerprints<BR>
++ update Arteam Import Reconstructor v1.2.1 (Nacho_dj)<BR>
+Includes:<BR>
++ Sorted imports<BR>
++ Fixed bug for UPX targets in the new Armadillo 6 code<BR>
+===========================================<BR>
+August 2008 - v1.4<BR>
++ fix some minor bugs<BR>
++ improve import redirection functionality<BR>
++ update Arteam Import Reconstructor v1.2 (Nacho_dj)<BR>
++ add support for Armadillo v6.0.0/v6.0.4 custom builds<BR>
++ new log internal EP/OEP (nanomites) option<BR>
++ add refresh option for processing multiple targets<BR>
+===========================================<BR>
+June 2008 - v1.3.3<BR>
++ hotfix to resolve strategic code splicing issue<BR>
+for last inactive MOV EDI,EDI instructions and<BR>
+issue a warning message<BR>
+===========================================<BR>
+May 2008 - v1.3.2<BR>
++ hotfix to resolve nanomites<BR>
++ relocate base address of Nanolib.dll<BR>
+===========================================<BR>
+May 2008 -
+v1.3.1<BR>
++ hotfix to resolve CreateProcess API problem<BR>
+in Nanolib.dll for target work directory<BR>
+===========================================<BR>
+May 2008 - v1.3<BR>
++ resolve relocations for dll files (Nacho_dj)<BR>
++ added new option to minimize the size of a dumped file (Nacho_dj)<BR>
+Particulary useful for Shockwave Flash + applications that make use of an overlay.
+Of course this will also rebuild a normal target's PE structure.<BR>
++ improved import rebuilder v1.1.2 (Nacho_dj)<BR>
++ added new option to "Resolve" nanomite INT3 instructions with their original<BR>
+jmp instructions and patch directly to the dumped target.
+Requires use of the nanomite "Analyze" + "Log" options. Note: you can also elect
+to resolve nanomites directly to a target process's memory if you elect to detach!!<BR>
++ integrated Admiral's Strategic Code Splicing removal engine into the tool.<BR>
+This is now the (default) behaviour and can be overridden with new option to redirect CS (code splices) instead<BR>
++ new option to dump / decrypt / decompress the .pdata section to a binary file<BR>
++ new option to detach from a process (choose: DebugBlocker or CopyMemII)<BR>
++ resolve problem for ArmAccess dll function:Installkey missing error msg<BR>
++ add support for UPX compressed single process targets<BR>
++ new option to change your Standard / Enhanced Hardware Fingerprint ID<BR>
++ resolve some minor bugs<BR>
+===========================================<BR>
+March 2008 - v1.2g [gabor edition]<BR>
++ add warning message for OEP call return VA not from Armadillo VM<BR>
+Note: Informational, not usually relevant for dll's or exe's with
+copymem2, but may be useful for troubleshooting invalid OEP's resulting from
+custom implementations and/or packing / compressing of a file prior to being
+protected by Armadillo<BR>
++ fix problem with copymem2 search string error<BR>
++ fix problem with createdump on error<BR>
+===========================================<BR>
+March 2008 - v1.2<BR>
++ improved PE section name resolution for internal use (thanks Ghandi)<BR>
++ improved ARTeam Import Reconstructor v1.2<BR>
+===========================================<BR>
+February 2008 - v1.1<BR>
++ added dll support (dll loader.exe)<BR>
++ added option "Use OpenMutext trick" to
+force a single process. Use only if normal "debug blocker" processing fails.
+This would occur when a parent process launches the child process, but doesn't
+debug the child process (i.e. use the WaitForDebugEvent API)<BR>
++ improve IAT elimination functionality<BR>
++ includes updated ARTeam Import Reconstructor<BR>
+=========================================== <BR>
+February 2008 - v1.0 (initial release)<BR>
+Born - 11/13/2007</P></BODY></HTML>

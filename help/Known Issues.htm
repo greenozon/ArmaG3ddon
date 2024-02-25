@@ -1,0 +1,31 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD><title>Known Issues</title>
+<META name=GENERATOR content="MSHTML 8.00.6001.18904">
+<META content="text/html; charset=iso-8859-1" http-equiv=Content-Type></HEAD>
+<BODY>
+<P><STRONG>Known Issues</STRONG></P>
+<P>You are encouraged to use tools like Armadillo Key Tool, ArmaDetach, ArmadilloFindProtected or ProtectionID to
+determine version / features / protection options of a target application.
+Should the Import Reconstructor fail, i.e. return code &gt; 0, a workaround is
+(Rerun the program, when the program asks you to dump / save, press "Cancel") to
+perform the dump and IAT rebuild yourself using a 3rd party tool (LordPE or
+similar), CHImpRec, ImpREC (or Magic_h2001's Universal Import fixer - UIF, etc.)
+to dump and/or rebuild the imports.<BR>Should the application appear to hang (do
+nothing) it could be that the process is taking some time to unpack, a resource
+conflict, a compatibility issue with your OS, your AV program or game manager
+running in the background, or the version of Armadillo is not supported! In
+some cases, if you try again, it may work due to available resources
+(memory).<BR>
+Note: Make sure there are
+no other instances of the target program running in
+Windows Task manager before proceeding.</P>
+<P><STRONG>Armadillo V6.0+ (Custom Builds)</STRONG></P>
+<P>You may need to patch for the condition "Armadillo not protected"
+MessageBox before executing a newly dumped file. This messagebox is generated
+when the variable <STRONG>ALTUSERNAME</STRONG> is not found when executing
+the GetEnvironmentVariableA API. This is quite normal after dumping an
+application.</P>
+<P>As with any custom build, it is always a good idea to
+use the SetEnvironmentVariableA API for all relevant Armadillo
+variables in your dumped file prior to executing from the OEP (i.e. build / run
+from an existing code cave and return to OEP).</P></BODY></HTML>

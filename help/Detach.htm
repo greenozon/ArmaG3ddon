@@ -1,0 +1,49 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD><title>Detach</title>
+<META name=GENERATOR content="MSHTML 8.00.6001.18828">
+<META content="text/html; charset=iso-8859-1" http-equiv=Content-Type></HEAD>
+<BODY>
+<P><STRONG>Detach (debug blocker + copymemII only)</STRONG></P>
+<P>You can elect to detach from the running child process by selecting the radio
+button for the type of detach (DebugBlocker vs CopyMemII). They are mutually
+exclusive.<BR><BR>You have 2 choices:</P>
+<UL>
+  <LI>Debug Blocker
+  <LI>CopyMemII</UL>
+<P align=center><IMG src="detach.jpg"></P>
+<P>AFTER Armageddon issues the detach message, DO NOT CLOSE ARMAGEDDON when
+detaching! Make sure no other instances of the target process are running prior
+to invoking Armageddon.<BR>You may have to manually kill any "Active" target
+processes after using this option!!<BR>You can elect to resolve nanomites prior to detaching
+(copymemII only). Very Useful!! You will be prompted to do so and you must have previously saved an *.anf
+file to Resolve nanomites in memory.<BR>A messagebox will appear asking to "resolve nanomites to
+continue?"</P>
+<P align=center><IMG src="resolvenanomites.jpg"></P>
+<P>Press OK to resolve or Cancel to
+bypass this feature.<BR>Nanomites will be resolved (patched) directly to the
+target process's memory.<BR><BR>Debug Blocker
+occurs right after the child process is launched by the parent process. This is
+the Entry Point of the child process. Armageddon will detach the child process
+dynamically using the DebugProcessStop API.</P>
+<P align=center><IMG src="detachdblog.jpg"></P>
+<P>As you can see above, you are given the Entry Point for debug blocker, (OEP
+for copymemII), the original bytes that must be restored after attaching, and
+the process id of the child to attach to.</P>
+<P>A context menu has been added for the log window. You can optionally select
+one line of text (in the example above, we could have selected the original
+bytes, copied them to the clipboard and pasted them into our debugger after
+attaching). You can select all list box items, clear all listbox items, select,
+clear and/or copy selected items.</P>
+<P align=center><IMG src="contextmenu.jpg"></P>
+<P>CopyMemII would normally be selected if the code (.text) section of the child
+process is encrypted. In addition to handling any Import Elimination and
+redirection, code splicing, etc. Armageddon would decrypt all code pages (4096
+bytes at a time) of the code section and then detach the child process using the
+DebugActiveProcessStop API. You can also choose to use CopyMemII if you simply
+want to detach at the OEP of the child process.</P>
+<P>Once detached you can use a <STRONG>new instance</STRONG> of an external
+debugger (i.e. Ollydbg) to attach to the child process. Armageddon provides the
+child processid to attach to and the original bytes that need to be patched
+back.</P>
+<P>*Note: Some targets may be difficult to detach from /
+attach to.</P></BODY></HTML>

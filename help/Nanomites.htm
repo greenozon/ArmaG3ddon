@@ -1,0 +1,68 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD><title>Nanomites</title>
+<META name=GENERATOR content="MSHTML 8.00.6001.18928">
+<META content="text/html; charset=iso-8859-1" http-equiv=Content-Type></HEAD>
+<BODY>
+<P><STRONG>Nanomites</STRONG></P>
+<P align=center><IMG src="nanomites.jpg"></P>
+<P>There are (3) choices for processing nanomites.</P>
+<P>The radio buttons for analyzing and logging nanomites are mutually exclusive (i.e. you can only select one at
+any time). Each option has its strengths and weaknesses.</P>
+<P>1. Use the built-in Armadillo Nanomites Fixer v1.2 (public release) dll.<BR>
+You are automatically prompted to save any
+analysis to an *.anf file for subsequent
+patching / viewing.<BR>See also special tool Armadillo Nanomites Fixer v1.2
+(public release) in this distribution and notes on usage!<BR>Use of this
+feature is fairly straightforward and similar to the standalone version. Simply
+select the option. If you have already created a dump file, simply ignore
+the "Ready to Dump" messagebox and press "Cancel" to continue analyzing and
+processing nanomites.</P>
+<P align=center><IMG src="analyzenanofixer.jpg"></P>
+<P>Error messages for the NanoFixer:</P>
+<FONT color=#800000 size=2>
+<P>No Real nanomites found, Unknown Error.<BR>
+No 0xCC Opcode Found, No INT3 Breakpoint Found.<BR>
+Cannot open The File, File Header Is Corrupted.<BR>
+Cannot Open Process.<BR>
+VirtualAlloc Failed.<BR>
+The Loaded .anf File Is Mismatched.</FONT></P>
+<P>Note: If after 30 seconds there is little or
+no activity found, you will be prompted with a
+messagebox:</P>
+<P align=center><IMG src="nanofixer_prob.jpg"></P>
+<P>Press "OK" to continue processing. Maybe the nanomites are
+contained within some function(s) which haven't been processed. Press "Cancel"
+to abort the analyzing function with the following messages displayed:</P>
+<P><FONT color=#800000 size=2>
+Less than 5% and/or no activity for 30 seconds<BR>
+Check for multiple instances, anti virus running.<BR>
+Analyze nanomites aborted, please try again later...</FONT></P>
+<P>2. Analyze all the nanomites in a static (target)
+dump. After dumping and rebuilding the target, this option disassembles all
+the instructions in the 1st text section logging all possible nanomites to be considered for analyzing.
+If you have already created a dump file, simply ignore the "Ready to
+Dump" messagebox and press "Cancel" to continue analyzing and processing
+nanomites. It may be necessary to run this option 2 or more times because as nanomites
+are analyzed and resolved, this could in turn, due to the deobfuscation of
+code, reveal new nanomites. When done, you are automatically prompted to save
+the analysis to an *.anf file. At this point, you can resolve "Patch Dump"
+the dump or load the saved *.anf files later for patching your target
+dump or memory process.</P>
+<P align=center><IMG src="analyzestatic.jpg"></P>
+<P>3. Log nanomites dynamically from a running process. For
+difficult targets, this may be your best first option. A separate instance
+of the target is launched. As nanomites are hit, they are logged to
+a table. The table stores uniquely sorted nanomites. This feature may be useful
+when the other 2 options fail to detect all the "Real" nanomites. When you
+have completed logging (i.e. you have exited the application) the program will
+automatically analyze every nanomite from the log table producing an analyzed
+file to be saved and/or used for patching a dump or process.</P>
+<P align=center><IMG src="analyzelog.jpg"></P>
+<P>Once a nanomites file is saved, it can be
+loaded via the "Load *.anf" button at any time before "Patch Dump" is
+required.</P>
+<P>The Viewer button will allow for reviewing all processed
+"Analyzed" *.anf nanomites for viewing.</P>
+<P>Note: The format of the *.anf file is not the same as the previous
+*.nan format. Therefore, the external nanomite viewer in the previous release is
+not compatible.</P></BODY></HTML>

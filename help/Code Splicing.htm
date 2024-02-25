@@ -1,0 +1,52 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>Code Splicing</title>
+<meta name="GENERATOR" content="WinCHM">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+<body>
+<P><STRONG>Code Splicing</STRONG></P>
+<P>Borrowed (with some minor updates + improvements) from Admiral's excellent ArmInline tool!</P>
+<P>Now the default option, although can be overridden by selecting Redirect CS
+(code splices - original default behaviour).<BR>Integrated
+ArmInline revirgin's code protected by 'Strategic Code Splicing' by recursively
+identifying and removing the redundant opcodes, rather than dumping and patching
+in a VirtualAlloc. It is very clean and adds nothing to the size of your dump.</P>
+<P>Armageddon automatically detects
+the VM address and size and sends this information to the Remove
+Code Splicing engine. The log will display a running total of fixed splices.</P>
+<P align=center><IMG src="codesplicing.jpg"></P>
+<P>Once Armageddon has identified a splice, it will remove the redundant
+instructions, reassemble it, and patch directly into where it should be (over
+the redirecting JMP). Once Armageddon says it's done the resulting 'Target Code'
+memory is (in theory) identical to what it would be if the app was built without
+code-splicing. Hence the 'splices' segment is now redundant and need not be
+retained. The module is now ready to dump.</P>
+<P>If Armageddon reports any warnings or errors, it may indicate that there
+is a problem and you should either rerun the target or elect to use the redirect
+code splices option (which used to be the default).</P>
+<P>Occasionally the Code Splicing engine will fail when supplied with some code
+that contained a redundant opcode before Armadillo even got to it (and hence it
+doesn't know how much dead code to remove). Often (but not always) you will be
+alerted of any such failures, so make sure you check the log window before
+assuming everything went okay. Very occasionally Armageddon will think
+everything has gone okay when one or more code splices is incorrect. In either
+case, the number of remaining problem splices should be small and manual repair
+shouldn't take much effort.<BR>The location of any such residues can usually be
+found by running the process after Armageddon has worked on it again (after
+you're finished dumping it) via the redirect code splices option and saving the
+dump to another name. Open this dump in your debugger to analyze the problem
+addresses and check for any exceptions that don't otherwise occur.</P>
+<P>Note: The log window may show the following:</P>
+<P align=center><IMG src="codesplice_accept.jpg"></P>
+<P>This normally would indicate that the instruction was accepted,
+however, this may or may not be correct.</P>
+<P align=center><IMG src="codesplice_reject.jpg"></P>
+<P>This normally would indicate that the instruction was rejected,
+however, this may or may not be correct.</P>
+<P>In the situations above, you should investigate the address and
+see if this instruction (if acccepted) presents a residual error and needs
+attention, or (if rejected) presents an invalid instruction sequence and again,
+needs attention.</P></body>
+</html>

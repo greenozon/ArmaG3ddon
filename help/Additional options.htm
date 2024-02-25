@@ -1,0 +1,72 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD><title>Additional options</title>
+<META name=GENERATOR content="MSHTML 8.00.6001.18928">
+<META content="text/html; charset=iso-8859-1" http-equiv=Content-Type></HEAD>
+<BODY>
+<P><STRONG>Additional options</STRONG></P>
+<P align=center><IMG src="Additional_Options.jpg"></P>
+<P>You can choose to either override the standard defaults, or,
+include additional options during the processing phase.</P>
+<P><STRONG>Redirect CS (Code Splicing)</STRONG><BR>Choose this option
+if for some reason the standard code splicing functionality either produces too
+many errors to correct, or, you need to produce another dump to
+research the error(s) to manually correct.</P>
+<P><STRONG>Minimize size</STRONG><BR>Choose this option to reduce the
+resultant size of a dumped module to its near virgin size or if the target
+application uses Shockwave Flash (Projector) and appended overlay data.
+<LI>Built in tool designed for reducing drastically the size of Armadillo targets.
+<LI>It deletes all sections added by the wrapper, adjusting the PE header.
+<LI>It rebuilds the resources section.
+<LI>It fixes relocation data in PE header.
+<LI>When it exists, appends the overlay at the end of the optimized file in its
+correct location.
+<P></P>
+<P>It detects, when possible, the exact offset of the import table of
+virgin.exe. Then, the import table could be rebuilt in the same place where it
+was created in the first compilation by the developer. This involves getting
+uniquely the functions used by the code section. So, it filters the imports
+found, choosing only those needed by the code section. In this way the tool is
+providing a complete unwrapped target, free of protector code. The import table
+gets rebuilt inside the existing sections. It fixes relocation data in PE
+header, whatever the function called is.</P>
+<P><STRONG>Known issues:</STRONG><BR>When using the
+SearchAndRebuildImportsNoNewSection it takes considerably more time than using
+the SearchAndRebuildImports function, because of the process of filtering all
+needed api's among all the ones found.</P>
+<P><STRONG>OpenMutex method</STRONG><BR>Choose this option if you
+prefer to dump your target without the debugblocker feature of Armadillo or, if
+the parent process launches a child process, but does not debug it (i.e.
+orphaned process), nor use nanomites.</P>
+<P><STRONG>Dump .pdata (PE section)</STRONG><BR>Have you ever been
+curious about the internal encrypted/compressed data contained in this section?
+This option will decrypt some files within pdata, decompress this
+section and dump it to an Unpacked pdata section in the folder:
+GeddonExtractedPdataFiles. You will notice the security.dll (a.k.a.
+ArmAccess.dll) plus a whole lot more. Check it out!</P>
+<P><STRONG>Ignore 2nd .text</STRONG><BR>
+Choose this option to ignore (one-time) using the PE header's 2nd
+.text section for finding the OEP. With some executables that
+include a 2nd .text / .itext section / UPX1 section, this option may be
+required for decrypting copymemII and/or nanomites prior to dumping. Afterwards, the original OEP
+in the 2nd text section is restored automatically.</P>
+<P><STRONG>Bypass 2nd .text</STRONG><BR>Choose this option to
+completely bypass using the PE header's 2nd .text section for finding the OEP.
+Although an application may have valid executable code residing in a 2nd .text
+section, the OEP may still reside in the 1st .text section, therefore, the tool
+will skip the analysis of the 2nd .text section in its entirety for the purposes
+of finding the OEP.</P>
+<P><STRONG>Security.dll dump</STRONG><BR>Similar in context to what dumping the
+.pdata section will provide. The before image of the internal security.dll can
+be saved as a *.dll file. You can use this file for informational or
+testing purposes in a debugger. Note that this file contains raw sizes
+that are not the same as the virtual sizes, so tampering with this file is
+solely at your own risk. Note: this file is similar, but not the same as the
+ArmAccess.dll file.</P>
+<P><STRONG>Security.dll load</STRONG><BR>You can load a previously saved
+security.dll file prior to the protection's main processing and decrypting cycle
+for a target. The original file sizes / raw sizes should
+not be tampered with (i.e. file realignment, etc.) that would alter
+the dll's size. Note: this file is not compressed back into the target.exe.
+You must reload this file each time you plan to use
+it. This file is propogated to the Nanolib.dll for analyzing and logging nanomites. It
+is not, however, propogated to the ArmNF.dll (Nanofixer) file.</P></BODY></HTML>

@@ -1,0 +1,32 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD><title>Options</title>
+<META name=GENERATOR content="MSHTML 8.00.6001.18904">
+<META content="text/html; charset=iso-8859-1" http-equiv=Content-Type></HEAD>
+<BODY>
+<P><FONT size=2 face=Arial><STRONG>Options</STRONG></FONT></P>
+<P align=center><IMG src="options.jpg"></P>
+<P>The options group box can be used to:</P>
+<UL>
+  <LI>Load a previously saved Armageddon options initialization file (*.ini)
+  <LI>Save a current Armageddon options initialization file (*.ini)
+  <LI>Cmdline opens a dialog which will accept any commandline
+  arguments to be passed to a program prior to execution:</UL>
+<P align=center><IMG src="CommandLine.jpg"></P>
+<P>Note: Initialization options must be used explicitly. (i.e. an
+options (*.ini) file is not loaded when Armageddon is first loaded, nor when a
+target application file is selected, nor will an options file be saved
+automatically). It is strongly recommended to use this feature either
+before opening a target application, or immediately after "refreshing" a
+session if required. Manually edit an initialization file at your own risk!</P>
+<P>This feature can be especially useful when grouping applications
+with similar option(s) requirements before unpacking. Generic or application
+specific initialization files can be used as necessary.</P>
+<P>Below is the sample template Armageddon options file
+(armageddon.ini) included in the distribution:</P>
+<P>[APPNAME]<BR>armageddon=ARMAGEDDON<BR>[OPTIONS]<BR>cmdline=<BR>redirectcs=0<BR>minimizesize=0<BR>securitydlldump=0<BR>securitydllload=0<BR>openmutex=0<BR>dumppdata=0<BR>ignore2ndtext=0<BR>bypass2ndtext=0<BR>[NANOMITES]<BR>analyzenf=0<BR>analyzest=0<BR>analyzelog=0<BR>[HARDWAREFINGERPRINT]<BR>standard=0000-0000<BR>enhanced=0000-0000</P>
+<P>Keyword = (Option value) = 0 means this option is
+disabled (ignored).<BR>Keyword = (Option value) = 1 means this option is
+enabled.<BR>(ex: redirectcs=1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Enable the
+Redirect Code Splicing option).<BR>cmdline=arg1 arg2 arg3 etc...&nbsp;&nbsp; for
+any commandline arguments to be passed to a program prior to
+executing<BR></P></BODY></HTML>

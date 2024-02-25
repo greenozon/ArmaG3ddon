@@ -1,0 +1,42 @@
+[OPTIONS]
+Compatibility=1.1 or later
+Compiled file=ArmaGeddon.chm
+Contents file=ArmaGeddon.hhc
+Default Window=main
+Default topic=Introduction.htm
+Display compile progress=No
+Full-text search=Yes
+Index file=ArmaGeddon.hhk
+Language=0x409 English (United States)
+Title=ArmaGeddon
+
+[WINDOWS]
+main=,"ArmaGeddon.hhc","ArmaGeddon.hhk","Introduction.htm","Introduction.htm",,,,,0x22520,250,0x386e,[50,50,750,550],0xb0000,,,,,,0
+
+
+[FILES]
+Additional options.htm
+Armadillo Nanomites Fixer v1.1.htm
+Code Splicing.htm
+Command Line.htm
+Credits.htm
+Detach.htm
+Disclaimer.htm
+Dump Messagebox.htm
+Hardware Fingerprint.htm
+Introduction.htm
+Key features.htm
+Known Issues.htm
+Log Window.htm
+Main GUI dialog.htm
+Nanomites.htm
+Options.htm
+Other Considerations.htm
+Refresh.htm
+Unsupported features.htm
+UPX.htm
+Version History.htm
+What's new.htm
+
+[INFOTYPES]
+

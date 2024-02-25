@@ -4,3 +4,5 @@ ipch/
 Release/
 *.opensdf
 Debug/
+help/ArmaGeddon.chm
+help/ArmaGeddon.chw
