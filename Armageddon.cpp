@@ -954,9 +954,8 @@ BOOL LoadBeaEngine(void)
 // Open Armadillo protected File dialog function
 int GetSecurityDllFileName(LPCSTR armbuffer)
 {
-	OPENFILENAME ofn;
+	OPENFILENAME ofn = { 0 };
 
-	memset(&ofn, 0, sizeof(ofn));
 	ofn.lStructSize = sizeof(ofn);
 	ofn.hInstance = GetModuleHandle(NULL);
 	ofn.hwndOwner = GetActiveWindow();
@@ -973,9 +972,8 @@ int GetSecurityDllFileName(LPCSTR armbuffer)
 // Save Armadillo protected File dialog function
 int PutSecurityDllFileName(LPCSTR armbuffer)
 {
-	OPENFILENAME ofn;
+	OPENFILENAME ofn = { 0 };
 
-	memset(&ofn, 0, sizeof(ofn));
 	ofn.lStructSize = sizeof(ofn);
 	ofn.hInstance = GetModuleHandle(NULL);
 	ofn.hwndOwner = GetActiveWindow();
@@ -992,9 +990,8 @@ int PutSecurityDllFileName(LPCSTR armbuffer)
 // Open Armadillo protected File dialog function
 int GetFileName(LPCSTR buffer)
 {
-	OPENFILENAME ofn;
+	OPENFILENAME ofn = { 0 };
 
-	memset(&ofn, 0, sizeof(ofn));
 	ofn.lStructSize = sizeof(ofn);
 	ofn.hInstance = GetModuleHandle(NULL);
 	ofn.hwndOwner = GetActiveWindow();
@@ -1011,9 +1008,8 @@ int GetFileName(LPCSTR buffer)
 // Open Armadillo Options "*.ini" File dialog function
 int GetIniFileName(LPCSTR inibuffer)
 {
-	OPENFILENAME ofn;
+	OPENFILENAME ofn = { 0 };
 
-	memset(&ofn, 0, sizeof(ofn));
 	ofn.lStructSize = sizeof(ofn);
 	ofn.hInstance = GetModuleHandle(NULL);
 	ofn.hwndOwner = GetActiveWindow();
@@ -1030,9 +1026,8 @@ int GetIniFileName(LPCSTR inibuffer)
 // Open Saved dump File dialog function
 int GetDumpName(LPCSTR filebuffer)
 {
-	OPENFILENAME ofn;
+	OPENFILENAME ofn = { 0 };
 
-	memset(&ofn, 0, sizeof(ofn));
 	ofn.lStructSize = sizeof(ofn);
 	ofn.hInstance = GetModuleHandle(NULL);
 	ofn.hwndOwner = GetActiveWindow();
@@ -1050,8 +1045,8 @@ int GetDumpName(LPCSTR filebuffer)
 // Save Dump File dialog function
 int PutFileName(LPCSTR savebuffer)
 {
-	OPENFILENAME ofn;
-	memset(&ofn, 0, sizeof(ofn));
+	OPENFILENAME ofn = { 0 };
+	
 	ofn.lStructSize = sizeof(ofn);
 	ofn.hInstance = GetModuleHandle(NULL);
 	ofn.hwndOwner = GetActiveWindow();
@@ -1077,8 +1072,8 @@ int PutFileName(LPCSTR savebuffer)
 // Save Options "*.ini" File dialog function
 int PutIniFileName(LPCSTR inisavebuffer)
 {
-	OPENFILENAME ofn;
-	memset(&ofn, 0, sizeof(ofn));
+	OPENFILENAME ofn = { 0 };
+
 	ofn.lStructSize = sizeof(ofn);
 	ofn.hInstance = GetModuleHandle(NULL);
 	ofn.hwndOwner = GetActiveWindow();
@@ -1096,9 +1091,8 @@ int PutIniFileName(LPCSTR inisavebuffer)
 // Save Nanomite File dialog function
 int PutNanoName(LPCSTR nanobuffer)
 {
-	OPENFILENAME ofn;
+	OPENFILENAME ofn = { 0 };
 
-	memset(&ofn, 0, sizeof(ofn));
 	ofn.lStructSize = sizeof(ofn);
 	ofn.hInstance = GetModuleHandle(NULL);
 	ofn.hwndOwner = GetActiveWindow();
@@ -1116,9 +1110,8 @@ int PutNanoName(LPCSTR nanobuffer)
 // Open Saved Nanomite Anf File dialog function
 int GetNanoAnfName(LPCSTR nanobuffer)
 {
-	OPENFILENAME ofn;
+	OPENFILENAME ofn = { 0 };
 
-	memset(&ofn, 0, sizeof(ofn));
 	ofn.lStructSize = sizeof(ofn);
 	ofn.hInstance = GetModuleHandle(NULL);
 	ofn.hwndOwner = GetActiveWindow();
@@ -1182,7 +1175,7 @@ unsigned __stdcall ArmNF_Analyze(void *)
 	}
 	else
 	{
-		memset(filebuffer, 0, sizeof(MAX_PATH));
+		memset(filebuffer, 0, sizeof(filebuffer));
 		goto ANALRETN;
 	}
 	LogItem("%s", isep);
@@ -1213,7 +1206,7 @@ int ArmNF_WriteTableToFile(void)
 	else
 	{
 		LogItem("Save nanomites table canceled");
-		memset(nanobuffer, 0, sizeof(MAX_PATH));
+		memset(nanobuffer, 0, sizeof(nanobuffer));
 		return 0;
 	}
 	LogItem("Saving Nanomites table...");
@@ -1238,7 +1231,7 @@ void ArmNF_DumpNanos(void)
 	{
 		// Initialize nanomite log structure
 		NFDretn = 0;
-		memset(&NFlog, 0, sizeof(Log));
+		memset(&NFlog, 0, sizeof(NFlog));
 		NFDretn = MakeLog(&NFlog);
 		if (NFDretn != 0)
 		{
@@ -1264,7 +1257,7 @@ void ArmNF_DumpNanos(void)
 		{
 			Sleep(200);
 			NFDretn = 0;
-			memset(&NFlog, 0, sizeof(Log));
+			memset(&NFlog, 0, sizeof(NFlog));
 			NFDretn = MakeLog(&NFlog);
 			if (NFDretn == 0)
 			{
@@ -1400,7 +1393,7 @@ BOOL SaveNano(void)
 	}
 	else
 	{
-		memset(nanobuffer, 0, sizeof(MAX_PATH));
+		memset(nanobuffer, 0, sizeof(nanobuffer));
 		return FALSE;
 	}
 	// Find the last '\\' to obtain a pointer to just the base module name part
@@ -1675,7 +1668,7 @@ BOOL CSVerify(HANDLE thisProcess)
 		if (Target[TPtr] == 0xE9)
 		{ // JMP to splice
 			// Reverse next 4 bytes
-			memset(&MyDisasm, 0, sizeof(DISASM));
+			memset(&MyDisasm, 0, sizeof(MyDisasm));
 			len = 0;
 			/* ============================= Init EIP */
 			MyDisasm.EIP = (UIntPtr)&Target[TPtr];
@@ -2292,7 +2285,7 @@ void FixSplice(DWORD_PTR Address, DWORD_PTR Redirect)
 		NEXTINSTR:
 			dwCalcAddress = Redirect + RPtr;
 			dwDataAddress = (DWORD_PTR)&Spliced[RPtr];
-			memset(&MyDisasm, 0, sizeof(DISASM));
+			memset(&MyDisasm, 0, sizeof(MyDisasm));
 			len = 0;
 			/* ============================= Init EIP */
 			MyDisasm.EIP = (UIntPtr)dwDataAddress;
@@ -2331,7 +2324,7 @@ void FixSplice(DWORD_PTR Address, DWORD_PTR Redirect)
 		{
 			dwCalcAddress = Redirect + RPtr;
 			dwDataAddress = (DWORD_PTR)&Spliced[RPtr];
-			memset(&MyDisasm, 0, sizeof(DISASM));
+			memset(&MyDisasm, 0, sizeof(MyDisasm));
 			len = 0;
 			/* ============================= Init EIP */
 			MyDisasm.EIP = (UIntPtr)dwDataAddress;
@@ -2473,7 +2466,7 @@ void DoRemoveSplicing(HANDLE thisProcess)
 			if (Target[TPtr] == 0xE9)
 			{ // JMP to splice
 				// Reverse next 4 bytes
-				memset(&MyDisasm, 0, sizeof(DISASM));
+				memset(&MyDisasm, 0, sizeof(MyDisasm));
 				len = 0;
 				/* ============================= Init EIP */
 				MyDisasm.EIP = (UIntPtr)&Target[TPtr];
@@ -2862,7 +2855,7 @@ BOOL LoadNanoAnf(void)
 	}
 	else
 	{
-		memset(nanobuffer, 0, sizeof(MAX_PATH));
+		memset(nanobuffer, 0, sizeof(nanobuffer));
 		return FALSE;
 	}
 	// Find the last '\\' to obtain a pointer to just the base module name part
@@ -2932,7 +2925,7 @@ BOOL LoadIniFile(void)
 	}
 	else
 	{
-		memset(inibuffer, 0, sizeof(MAX_PATH));
+		memset(inibuffer, 0, sizeof(inibuffer));
 		return FALSE;
 	}
 	LogItem("Loading Armageddon options file...");
@@ -3234,7 +3227,7 @@ BOOL SaveIniFile(void)
 	}
 	else
 	{
-		memset(inisavebuffer, 0, sizeof(MAX_PATH));
+		memset(inisavebuffer, 0, sizeof(inisavebuffer));
 		return FALSE;
 	}
 	LogItem("Saving Armageddon options file...");
@@ -4122,13 +4115,13 @@ void AddNewSection(char* szName, DWORD dwSectsize)
 	vsize = PEAlign(dwSectsize,
 		pImgOptHdr->SectionAlignment);
 
-	memset(pImgSectHdr, 0, (size_t)sizeof(IMAGE_SECTION_HEADER));
+	memset(pImgSectHdr, 0, sizeof(IMAGE_SECTION_HEADER));
 	pImgSectHdr->PointerToRawData = roffset;
 	pImgSectHdr->VirtualAddress = voffset;
 	pImgSectHdr->SizeOfRawData = rsize;
 	pImgSectHdr->Misc.VirtualSize = vsize;
 	pImgSectHdr->Characteristics = 0xE00000E0;
-	memcpy(pImgSectHdr->Name, szName, (size_t)strlen(szName));
+	memcpy(pImgSectHdr->Name, szName, strlen(szName));
 	pImgFileHdr->NumberOfSections++;
 	pImgOptHdr->SizeOfImage = pImgSectHdr->VirtualAddress + pImgSectHdr->Misc.VirtualSize;
 	return;
@@ -4154,7 +4147,7 @@ void CreateDump(HANDLE thisProcess, int dumparmvm)
 	}
 	else
 	{
-		memset(savebuffer, 0, sizeof(MAX_PATH));
+		memset(savebuffer, 0, sizeof(savebuffer));
 		return;
 	}
 	// Find the last '\\' to obtain a pointer to just the base module name part
@@ -4531,7 +4524,7 @@ void DumpSecurityDll(HANDLE thisProcess)
 	}
 	else
 	{
-		memset(savebuffer, 0, sizeof(MAX_PATH));
+		memset(savebuffer, 0, sizeof(savebuffer));
 		return;
 	}
 	// Find the last '\\' to obtain a pointer to just the base module name part
@@ -4589,7 +4582,7 @@ void LoadSecurityDllFileName(HANDLE thisProcess)
 	}
 	else
 	{
-		memset(armbuffer, 0, sizeof(MAX_PATH));
+		memset(armbuffer, 0, sizeof(armbuffer));
 		return;
 	}
 	// Find the last '\\' to obtain a pointer to just the base module name part
@@ -4738,7 +4731,7 @@ BOOL DisassembleDump(void)
 	}
 	else
 	{
-		memset(filebuffer, 0, sizeof(MAX_PATH));
+		memset(filebuffer, 0, sizeof(filebuffer));
 		return FALSE;
 	}
 	// Find the last '\\' to obtain a pointer to just the base module name part
@@ -4868,7 +4861,7 @@ BOOL DisassembleDump(void)
 	logitemreplace = TRUE;
 	LogItem("%lu potential nanomites...", (DWORD)pNumNanos);
 
-	memset(&MyDisasm, 0, sizeof(DISASM));
+	memset(&MyDisasm, 0, sizeof(MyDisasm));
 	len = 0;
 	/* ============================= Init EIP */
 	MyDisasm.EIP = (UIntPtr)dwDataAddress;
@@ -5026,7 +5019,7 @@ BOOL ResolveDump(void)
 	}
 	else
 	{
-		memset(filebuffer, 0, sizeof(MAX_PATH));
+		memset(filebuffer, 0, sizeof(filebuffer));
 		return FALSE;
 	}
 	// Find the last '\\' to obtain a pointer to just the base module name part
@@ -5821,7 +5814,7 @@ BOOL DetermineStdHardwareFingerprint(HANDLE thisProcess, int errmode)
 			}
 			return FALSE;
 		}
-		memset(&MyDisasm, 0, sizeof(DISASM));
+		memset(&MyDisasm, 0, sizeof(MyDisasm));
 		len = 0;
 		/* ============================= Init EIP */
 		MyDisasm.EIP = (UIntPtr)dwCalcAddress + dwOffset;
@@ -5839,7 +5832,7 @@ BOOL DetermineStdHardwareFingerprint(HANDLE thisProcess, int errmode)
 	}
 	// disassembler call instruction for destination address
 	// Assemble new instructions on this address
-	memset(&MyDisasm, 0, sizeof(DISASM));
+	memset(&MyDisasm, 0, sizeof(MyDisasm));
 	len = 0;
 	/* ============================= Init EIP */
 	MyDisasm.EIP = (UIntPtr)dwCalcAddress + dwOffset;
@@ -6019,7 +6012,7 @@ BOOL DetermineEnhHardwareFingerprint(HANDLE thisProcess, int errmode)
 			}
 			return FALSE;
 		}
-		memset(&MyDisasm, 0, sizeof(DISASM));
+		memset(&MyDisasm, 0, sizeof(MyDisasm));
 		len = 0;
 		/* ============================= Init EIP */
 		MyDisasm.EIP = (UIntPtr)dwCalcAddress + dwOffset;
@@ -6035,7 +6028,7 @@ BOOL DetermineEnhHardwareFingerprint(HANDLE thisProcess, int errmode)
 			dwOffset++;
 		}
 	}
-	memset(&MyDisasm, 0, sizeof(DISASM));
+	memset(&MyDisasm, 0, sizeof(MyDisasm));
 	len = 0;
 	/* ============================= Init EIP */
 	MyDisasm.EIP = (UIntPtr)dwCalcAddress + dwOffset;
@@ -7232,25 +7225,25 @@ void InitializeVariables(void)
 	numitems = 0;
 	compilertype = 0;
 	autorun = 0;
-	memset(buffer, 0, sizeof(MAX_PATH));
-	memset(savebuffer, 0, sizeof(MAX_PATH));
-	memset(inibuffer, 0, sizeof(MAX_PATH));
-	memset(inisavebuffer, 0, sizeof(MAX_PATH));
-	memset(nanobuffer, 0, sizeof(MAX_PATH));
-	memset(nanologbuffer, 0, sizeof(MAX_PATH));
-	memset(filebuffer, 0, sizeof(MAX_PATH));
-	memset(armbuffer, 0, sizeof(MAX_PATH));
-	memset(copybuffer, 0, sizeof(MAX_PATH));
-	memset(logbuffer, 0, sizeof(MAX_PATH));
-	memset(cmdbuffer, 0, sizeof(MAX_PATH));
+	memset(buffer, 0, sizeof(buffer));
+	memset(savebuffer, 0, sizeof(savebuffer));
+	memset(inibuffer, 0, sizeof(inibuffer));
+	memset(inisavebuffer, 0, sizeof(inisavebuffer));
+	memset(nanobuffer, 0, sizeof(nanobuffer));
+	memset(nanologbuffer, 0, sizeof(nanologbuffer));
+	memset(filebuffer, 0, sizeof(filebuffer));
+	memset(armbuffer, 0, sizeof(armbuffer));
+	memset(copybuffer, 0, sizeof(copybuffer));
+	memset(logbuffer, 0, sizeof(logbuffer));
+	memset(cmdbuffer, 0, sizeof(cmdbuffer));
 	memset(sztempbuffer, 0, sizeof(sztempbuffer));
-	memset(nbuf, 0, sizeof(MAX_PATH));
-	memset(dbuf, 0, sizeof(MAX_PATH));
-	memset(Filename, 0, sizeof(MAX_PATH));
-	memset(pszDllName, 0, sizeof(MAX_PATH));
+	memset(nbuf, 0, sizeof(nbuf));
+	memset(dbuf, 0, sizeof(dbuf));
+	memset(Filename, 0, sizeof(Filename));
+	memset(pszDllName, 0, sizeof(pszDllName));
 	memset(ibuf, 0, sizeof(ibuf));
 	memset(bufbp, 0, sizeof(bufbp));
-	memset(szCmdbuffer, 0, sizeof(MAX_PATH));
+	memset(szCmdbuffer, 0, sizeof(szCmdbuffer));
 	pszPathName = 0;
 	pszBaseExt = 0;
 	pszBaseName = 0;
@@ -7332,7 +7325,7 @@ void InitializeVariables(void)
 	dwoepcall = 0;
 	memset(hMods, 0, sizeof(hMods));
 	memset(modlist, 0, sizeof(modlist));
-	memset(szModName, 0, sizeof(MAX_PATH));
+	memset(szModName, 0, sizeof(szModName));
 	nMods = 0;
 	cbNeeded = 0;
 	dwSize = 0;
@@ -7344,10 +7337,10 @@ void InitializeVariables(void)
 	memset(b, 0, sizeof(b));
 	memset(c, 0, sizeof(c));
 	memset(d, 0, sizeof(d));
-	memset(e, 0, sizeof(d));
-	memset(szOS, 0, sizeof(BUFSIZE));
-	memset(bszOS, 0, sizeof(BUFSIZE));
-	memset(dszOS, 0, sizeof(BUFSIZE));
+	memset(e, 0, sizeof(e));
+	memset(szOS, 0, sizeof(szOS));
+	memset(bszOS, 0, sizeof(bszOS));
+	memset(dszOS, 0, sizeof(dszOS));
 	childhThread = 0;
 	childhProcess = 0;
 	hThread = 0;
@@ -7396,9 +7389,9 @@ void InitializeVariables(void)
 	i = j = k = n = 0;
 	sstrlen = 0;
 	ustring = 0;
-	memset(intext, 0, sizeof(MAXPAT + 1));
-	memset(outtext, 0, sizeof(MAXPAT + 1));
-	memset(hextext, 0, sizeof(MAXPAT + 1));
+	memset(intext, 0, sizeof(intext));
+	memset(outtext, 0, sizeof(outtext));
+	memset(hextext, 0, sizeof(hextext));
 	wstring = 0;
 	memset(IRwarn, 0, sizeof(IRwarn));
 	IRiatrva = 0;
@@ -7408,17 +7401,17 @@ void InitializeVariables(void)
 	MSwarn = 0;
 	MSretn = 0;
 	MSINT = 0;
-	memset(gnfobuffer, 0, sizeof(MAX_PATH));
+	memset(gnfobuffer, 0, sizeof(gnfobuffer));
 	NumNanos = 0;
-	memset(&NFlog, 0, sizeof(Log));
+	memset(&NFlog, 0, sizeof(NFlog));
 	pasm = 0;
 	memset(&am, 0, sizeof(am));
 	memset(&da, 0, sizeof(da));
-	memset(cjumptype, 0, sizeof(TEXTLEN));
-	memset(cjumpdest, 0, sizeof(TEXTLEN));
-	memset(ccmd, 0, sizeof(MAXCMDSIZE));
-	memset(s, 0, sizeof(TEXTLEN));
-	memset(errtext, 0, sizeof(TEXTLEN));
+	memset(cjumptype, 0, sizeof(cjumptype));
+	memset(cjumpdest, 0, sizeof(cjumpdest));
+	memset(ccmd, 0, sizeof(ccmd));
+	memset(s, 0, sizeof(s));
+	memset(errtext, 0, sizeof(errtext));
 	memset(&si, 0, sizeof(si));
 	memset(&pi, 0, sizeof(pi));
 	memset(&Context, 0, sizeof(Context));
@@ -7477,7 +7470,7 @@ void InitializeVariables(void)
 	OEPDelphiVAddress = 0;
 	OEPDelphiRVAddress = 0;
 	g_pMappedFileBase = 0;
-	memset(SecurityBuffer, 0, SECURITYBUFFERSIZE);
+	memset(SecurityBuffer, 0, sizeof(SecurityBuffer));
 	SecuritySize = 0;
 	FuckedUp = FALSE;
 	SStart = 0;
@@ -7486,7 +7479,7 @@ void InitializeVariables(void)
 	TLength = 0;
 	Instrs = 0;
 	NumSegments = 0;
-	memset(Asm, 0, sizeof(TEXTLEN));
+	memset(Asm, 0, sizeof(Asm));
 	Spliced = 0;
 	Target = 0;
 	hModule = 0;
@@ -8829,7 +8822,7 @@ unsigned __stdcall RunExe(void *)
 																		if (Target[dwlength] == 0xE9)
 																		{
 																			dwCalcAddress = (DWORD_PTR)UPX1VMaddress + dwlength;
-																			memset(&MyDisasm, 0, sizeof(DISASM));
+																			memset(&MyDisasm, 0, sizeof(MyDisasm));
 																			len = 0;
 																			/* ============================= Init EIP */
 																			MyDisasm.EIP = (UIntPtr)&Target[dwlength];
@@ -9823,7 +9816,7 @@ unsigned __stdcall RunExe(void *)
 												if (Target[dwlength] == 0xE9)
 												{
 													dwCalcAddress = (DWORD_PTR)UPX1VMaddress + dwlength;
-													memset(&MyDisasm, 0, sizeof(DISASM));
+													memset(&MyDisasm, 0, sizeof(MyDisasm));
 													len = 0;
 													/* ============================= Init EIP */
 													MyDisasm.EIP = (UIntPtr)&Target[dwlength];
@@ -11471,7 +11464,7 @@ LRESULT CALLBACK DialogProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam
 		UINT nFiles = DragQueryFile(hDrop, (UINT)-1, NULL, 0);
 		for (int i = 0; i < nFiles; i++)
 		{
-			memset(buffer, 0, sizeof(MAX_PATH));
+			memset(buffer, 0, sizeof(buffer));
 			if (DragQueryFile(hDrop, i, (LPSTR)buffer, MAX_PATH))
 			{
 				// Send a Refresh button click message if user wants to reopen a target
