@@ -1170,11 +1170,7 @@ unsigned __stdcall ArmNF_Analyze(void *)
 	typed td = { 0 };
 	int retncd = 0;
 	// Resolve nanomites in saved dumped exe file
-	if (GetDumpName((LPCSTR)filebuffer))
-	{
-		// continue
-	}
-	else
+	if (!GetDumpName((LPCSTR)filebuffer))
 	{
 		memset(filebuffer, 0, sizeof(filebuffer));
 		goto ANALRETN;
@@ -1200,11 +1196,7 @@ int ArmNF_WriteTableToFile(void)
 		return 1;
 	}
 	// Create a nano file
-	if (PutNanoName((LPCSTR)nanobuffer))
-	{
-		// continue
-	}
-	else
+	if (!PutNanoName((LPCSTR)nanobuffer))
 	{
 		LogItem("Save nanomites table canceled");
 		memset(nanobuffer, 0, sizeof(nanobuffer));
@@ -1388,11 +1380,7 @@ BOOL SaveNano(void)
 	HANDLE	hFile3 = 0;
 
 	// Create a nano file
-	if (PutNanoName((LPCSTR)nanobuffer))
-	{
-		// continue
-	}
-	else
+	if (!PutNanoName((LPCSTR)nanobuffer))
 	{
 		memset(nanobuffer, 0, sizeof(nanobuffer));
 		return FALSE;
@@ -2850,11 +2838,7 @@ void SaveLogfile(void)
 BOOL LoadNanoAnf(void)
 {
 	// load a nano *.anf file
-	if (GetNanoAnfName((LPCSTR)nanobuffer))
-	{
-		// continue
-	}
-	else
+	if (!GetNanoAnfName((LPCSTR)nanobuffer))
 	{
 		memset(nanobuffer, 0, sizeof(nanobuffer));
 		return FALSE;
@@ -2920,11 +2904,7 @@ BOOL LoadNanoAnf(void)
 BOOL LoadIniFile(void)
 {
 	// open a saved options file
-	if (GetIniFileName((LPCSTR)inibuffer))
-	{
-		// continue
-	}
-	else
+	if (!GetIniFileName((LPCSTR)inibuffer))
 	{
 		memset(inibuffer, 0, sizeof(inibuffer));
 		return FALSE;
@@ -3223,10 +3203,6 @@ BOOL LoadIniFile(void)
 BOOL SaveIniFile(void)
 {
 	if (PutIniFileName((LPCSTR)inisavebuffer))
-	{
-		// continue
-	}
-	else
 	{
 		memset(inisavebuffer, 0, sizeof(inisavebuffer));
 		return FALSE;
@@ -4143,11 +4119,7 @@ void CreateDump(HANDLE thisProcess, int dumparmvm)
 		char *base = strrchr(buffer, '\\');
 		StringCchPrintf(savebuffer, MAX_PATH, "%.*s\\dump.exe", base - buffer, buffer);
 	}
-	else if (PutFileName((LPCSTR)savebuffer))
-	{
-		// continue
-	}
-	else
+	else if (!PutFileName((LPCSTR)savebuffer))
 	{
 		memset(savebuffer, 0, sizeof(savebuffer));
 		return;
@@ -4520,11 +4492,7 @@ void DumpSecurityDll(HANDLE thisProcess)
 	}
 	dwSize = pImgOptHdr->SizeOfImage;
 	// Create a dumped dll file of security.dll (security.dll)
-	if (PutSecurityDllFileName((LPCSTR)savebuffer))
-	{
-		// continue
-	}
-	else
+	if (!PutSecurityDllFileName((LPCSTR)savebuffer))
 	{
 		memset(savebuffer, 0, sizeof(savebuffer));
 		return;
@@ -4578,17 +4546,13 @@ void LoadSecurityDllFileName(HANDLE thisProcess)
 	HANDLE	hFile5 = 0;
 	dwArmVMAddress = 0;
 	dwArmVMNSize = 0;
-	if (GetSecurityDllFileName((LPCSTR)armbuffer))
-	{
-		// continue
-	}
-	else
+	if (!GetSecurityDllFileName((LPCSTR)armbuffer))
 	{
 		memset(armbuffer, 0, sizeof(armbuffer));
 		return;
 	}
 	// Find the last '\\' to obtain a pointer to just the base module name part
-	pszPathName = strrchr((char *)armbuffer, '\\');
+	pszPathName = strrchr(armbuffer, '\\');
 	if (pszPathName)  // We found a path, so advance to the base module name
 	{
 		pszPathName++;
@@ -4600,7 +4564,7 @@ void LoadSecurityDllFileName(HANDLE thisProcess)
 	LogItem("%s", isep);
 	LogItem("Loading: %s", pszPathName);
 	// Read the security dll file for the PE header data
-	hFile5 = CreateFile((LPCSTR)armbuffer,     // file to create
+	hFile5 = CreateFile(armbuffer,     // file to create
 		GENERIC_READ | GENERIC_WRITE,          // open for read/write
 		FILE_SHARE_READ | FILE_SHARE_WRITE,       // share for read/write
 		NULL,                  // default security
@@ -4615,12 +4579,12 @@ void LoadSecurityDllFileName(HANDLE thisProcess)
 	}
 	// Obtain ArmVM size 
 	PvoidAddr = (PVOID)(DWORD_PTR)(Context.Esp + 8);
-	if (!ReadProcessMemory(thisProcess, (LPVOID)PvoidAddr, &PvoidRead,
+	if (!ReadProcessMemory(thisProcess, PvoidAddr, &PvoidRead,
 		sizeof(DWORD_PTR), &dwRead))
 	{
 		LogItem("ReadProcessMemory Error DetermineSecurityARMVM address: %p", PvoidAddr);
 		LogItem(NULL);
-		return;
+		goto ARMDONE;
 	}
 	if (PvoidRead != NULL)
 	{
@@ -4632,12 +4596,12 @@ void LoadSecurityDllFileName(HANDLE thisProcess)
 	}
 	// Obtain ArmVM Address 
 	PvoidAddr = (PVOID)(DWORD_PTR)(Context.Ebp - 48);
-	if (!ReadProcessMemory(thisProcess, (LPVOID)PvoidAddr, &PvoidRead,
+	if (!ReadProcessMemory(thisProcess, PvoidAddr, &PvoidRead,
 		sizeof(DWORD_PTR), &dwRead))
 	{
 		LogItem("ReadProcessMemory Error DetermineSecurityARMVM address: %p", PvoidAddr);
 		LogItem(NULL);
-		return;
+		goto ARMDONE;
 	}
 	if (PvoidRead != NULL)
 	{
@@ -4691,7 +4655,7 @@ void LoadSecurityDllFileName(HANDLE thisProcess)
 	PvoidAddr = dwArmVMAddress;
 	dwSize = pImgOptHdr->SizeOfImage;
 	// Write the security.dll module's process address space into our process memory
-	if (!WriteProcessMemory(thisProcess, (LPVOID)PvoidAddr, dwAddress,
+	if (!WriteProcessMemory(thisProcess, PvoidAddr, dwAddress,
 		dwSize, &dwWritten))
 	{
 		LogItem("WriteProcessMemory Error LoadSecurityDll address: %p", PvoidAddr);
@@ -4727,11 +4691,7 @@ BOOL DisassembleDump(void)
 	pNumNanos = 0;
 
 	// Resolve nanomites in saved dumped exe file
-	if (GetDumpName((LPCSTR)filebuffer))
-	{
-		// continue
-	}
-	else
+	if (!GetDumpName((LPCSTR)filebuffer))
 	{
 		memset(filebuffer, 0, sizeof(filebuffer));
 		return FALSE;
@@ -5015,11 +4975,7 @@ BOOL ResolveDump(void)
 		return FALSE;
 	}
 	// Resolve nanomites in saved dumped exe file
-	if (GetDumpName((LPCSTR)filebuffer))
-	{
-		// continue
-	}
-	else
+	if (!GetDumpName((LPCSTR)filebuffer))
 	{
 		memset(filebuffer, 0, sizeof(filebuffer));
 		return FALSE;
