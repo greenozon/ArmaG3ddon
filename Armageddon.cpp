@@ -48,14 +48,14 @@ HBITMAP newaboutbmp = 0;
 HBITMAP newrefreshbmp = 0;
 HBITMAP newcreditbmp = 0;
 HBITMAP newhelpbmp = 0;
-
+/*
 class myexception : public std::exception
 {
 	virtual const char* what() const throw()
 	{
 		return "My exception happened";
 	}
-} myex;
+} myex; */
 /*	Dialog related */
 WNDCLASS wc = { 0 };
 INITCOMMONCONTROLSEX cc = { 0 };
@@ -667,6 +667,7 @@ the PEFILE header exists just after that dword              */
 			 sizeof (IMAGE_FILE_HEADER)))
 //IMAGE_DATA_DIRECTORY DataDirectory[IMAGE_NUMBEROF_DIRECTORY_ENTRIES];
 // Directory Entries [INDEX] BELOW:
+/* already defined in windows header winnt.h
 #define IMAGE_DIRECTORY_ENTRY_EXPORT          0   // Export Directory
 #define IMAGE_DIRECTORY_ENTRY_IMPORT          1   // Import Directory
 #define IMAGE_DIRECTORY_ENTRY_RESOURCE        2   // Resource Directory
@@ -683,7 +684,7 @@ the PEFILE header exists just after that dword              */
 #define IMAGE_DIRECTORY_ENTRY_IAT            12   // Import Address Table
 #define IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT   13   // Delay Load Import Descriptors
 #define IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR 14   // COM Runtime descriptor
-
+*/
 /* section headers are immediately after PE optional header    */
 #define SECHDROFFSET(a) ((LPVOID)((BYTE *)a		     +	\
 			 ((PIMAGE_DOS_HEADER)a)->e_lfanew    +	\
@@ -1182,7 +1183,7 @@ unsigned __stdcall ArmNF_Analyze(void *)
 	td.T2 = ThroughFile;
 	td.T1 = UNKNOWN_COMPILR;
 	int typei = 0;
-	memcpy(&typei, &td, 4);
+	memcpy(&typei, &td, sizeof(td));
 	retncd = Analyze(filebuffer, buffer, thispid, typei);
 ANALRETN:
 	isrunning = FALSE;
@@ -1416,7 +1417,7 @@ BOOL SaveNano(void)
 		LogItem("CreateFile error %s %d", c, GetLastError());
 		return FALSE;
 	}
-	WriteFile(hFile3, (LPCVOID)RNano, sizeof(RNANO)*NumNanos, &dwWritten, NULL);
+	WriteFile(hFile3, RNano, sizeof(RNANO)*NumNanos, &dwWritten, NULL);
 	SetEndOfFile(hFile3);
 	CloseHandle(hFile3);
 	hFile3 = 0;
@@ -2575,11 +2576,11 @@ HFIND SetFindPattern(unsigned char *lpszPattern)
 	ZeroMemory(&lpfind->pp, sizeof(lpfind->pp));
 	ZeroMemory(&lpfind->skip, sizeof(lpfind->skip));
 
-	memcpy(lpfind->pp, (unsigned char *)lpszPattern, lpfind->plen);
+	memcpy(lpfind->pp, lpszPattern, lpfind->plen);
 	// Wildcard related default "?" is used hex "3F"
-	if ((unsigned char *)wstring)
+	if (wstring)
 	{
-		memcpy(lpfind->pw, (unsigned char *)wstring, strlen((const char *)wstring));
+		memcpy(lpfind->pw, wstring, strlen((const char *)wstring));
 	}
 	else
 	{
@@ -2795,7 +2796,7 @@ void SaveLogfile(void)
 	HANDLE	hFile2 = 0;
 	DWORD	fp = 0;
 	int		iStatus = 0;
-	memcpy(logbuffer, buffer, (size_t)MAX_PATH);
+	memcpy(logbuffer, buffer, sizeof(logbuffer));
 	// Find the last '\\' to obtain a pointer to just the base module name part
 	pszPathName = strrchr((char *)logbuffer, '\\');
 	if (pszPathName)  // We found a path, so advance to the base module name
@@ -2834,7 +2835,7 @@ void SaveLogfile(void)
 		{
 			int len = SendMessage(hwndIDLISTVIEW, LVM_GETITEMTEXT, i, (LPARAM)&lvi);
 			strcpy(sztempbuffer + len, "\r\n");
-			WriteFile(hFile2, (LPCVOID)sztempbuffer, len + 2, &dwWritten, NULL);
+			WriteFile(hFile2, sztempbuffer, len + 2, &dwWritten, NULL);
 		}
 	}
 	SetEndOfFile(hFile2);
@@ -2892,7 +2893,7 @@ BOOL LoadNanoAnf(void)
 		NULL);
 	NumNanos = (dwAnfFileSize / sizeof(RNANO));
 	RNano = new RNANO[NumNanos + 1];
-	if (!ReadFile(hFile4, (LPVOID)RNano, sizeof(RNANO)*NumNanos, &dwRead, NULL))
+	if (!ReadFile(hFile4, RNano, sizeof(RNANO)*NumNanos, &dwRead, NULL))
 	{
 		LogItem("ReadFile Error LoadNanoAnf");
 		LogItem(NULL);
@@ -3732,8 +3733,8 @@ BOOL DetermineArmSections(HANDLE thisProcess)
 		for (n = nSections; n > 0; n--)
 		{
 			memset(SuprName, 0, sizeof(SuprName));
-			memcpy((void *)SuprName, (void *)pImgLSectHdr->Name, IMAGE_SIZEOF_SHORT_NAME);
-			CompName = strupr((char *)SuprName);
+			memcpy(SuprName, pImgLSectHdr->Name, IMAGE_SIZEOF_SHORT_NAME);
+			CompName = strupr(SuprName);
 			if ((strncmp((const char *)CompName, ".PDATA", 6) == 0 ||
 				strncmp((const char *)CompName, "PDATA", 5) == 0 ||
 				(pImgLSectHdr->Characteristics >= 0xC0000040 && pImgLSectHdr->Characteristics <= 0xC1000000
@@ -3774,8 +3775,8 @@ BOOL DetermineArmSections(HANDLE thisProcess)
 		for (n = 0; n < nSections; n++)
 		{
 			memset(SuprName, 0, sizeof(SuprName));
-			memcpy((void *)SuprName, (void *)pImgSectHdr->Name, IMAGE_SIZEOF_SHORT_NAME);
-			CompName = strupr((char *)SuprName);
+			memcpy(SuprName, pImgSectHdr->Name, IMAGE_SIZEOF_SHORT_NAME);
+			CompName = strupr(SuprName);
 
 			// UPX specific
 			if (strncmp((const char *)CompName, "UPX0", 4) == 0 &&
@@ -4247,7 +4248,7 @@ void CreateDump(HANDLE thisProcess, int dumparmvm)
 		/* Process each section */
 		for (i = 0; i < nSections; i++)
 		{
-			memcpy((void *)SuprName, (void *)pImgSectHdr->Name, IMAGE_SIZEOF_SHORT_NAME);
+			memcpy(SuprName, pImgSectHdr->Name, IMAGE_SIZEOF_SHORT_NAME);
 			CompName = strupr((char *)SuprName);
 			// Note: the last section's entry is saved here
 			// This is the pointer to the overlay data if needed
@@ -4358,7 +4359,7 @@ void CreateDump(HANDLE thisProcess, int dumparmvm)
 						OPEN_EXISTING,		// overwrite existing
 						FILE_ATTRIBUTE_NORMAL, // normal file
 						NULL);				// no attr. template
-					char tmp[64];
+					char tmp[SECURITYBUFFERSIZE];
 					SetFilePointer(hFile, -SecuritySize, NULL, FILE_END);
 					ReadFile(hFile, tmp, SECURITYBUFFERSIZE, &dwRead, NULL);
 					if (memcmp(tmp, SecurityBuffer, SECURITYBUFFERSIZE) == 0)
@@ -5245,13 +5246,13 @@ BOOL ResolveDump(void)
 			// Determine raw dump address (offset)
 			rawaddr = RNano[i].Address - (DWORD_PTR)BaseOfImage - ((DWORD_PTR)pImgSectHdr->VirtualAddress - (DWORD_PTR)pImgSectHdr->PointerToRawData);
 			// Set file position accordingly
-			SetFilePointer(hFile5, (DWORD_PTR)rawaddr, NULL, FILE_BEGIN);
+			SetFilePointer(hFile5, rawaddr, NULL, FILE_BEGIN);
 			dumpbyte = 0;
-			ReadFile(hFile5, (LPVOID)&dumpbyte, sizeof(BYTE), &dwRead, NULL);
+			ReadFile(hFile5, &dumpbyte, sizeof(dumpbyte), &dwRead, NULL);
 			if (dumpbyte == 0xCC)
 			{
-				SetFilePointer(hFile5, (DWORD_PTR)rawaddr, NULL, FILE_BEGIN);
-				WriteFile(hFile5, (LPCVOID)am.code, sizeof(BYTE)*j, &dwWritten, NULL);
+				SetFilePointer(hFile5, rawaddr, NULL, FILE_BEGIN);
+				WriteFile(hFile5, am.code, sizeof(BYTE)*j, &dwWritten, NULL);
 				resolvednanos++;
 			}
 		}
@@ -5289,7 +5290,7 @@ RESOLVEDONE:
 BOOL ResolveProcess(HANDLE thisProcess)
 {
 	DWORD	rawaddr = 0;
-	char	rawbuffer[TEXTLEN] = { 0 };
+	//char	rawbuffer[TEXTLEN] = { 0 };
 	DWORD	resolvednanos = 0;
 	DWORD	dwFileOffset = 0;
 	BYTE    readbyte = 0;
@@ -5962,7 +5963,7 @@ BOOL DetermineEnhHardwareFingerprint(HANDLE thisProcess, int errmode)
 	sprintf(b, "%02X", BEGFP);
 	sprintf(b + 2, "%08X", dwBMVMOffset);
 	ZeroMemory(&hextext, sizeof(hextext));
-	memcpy(hextext, (unsigned char *)b, 10);
+	memcpy(hextext, b, 10);
 	// Search for the 1st occurrence of PUSH dwBMVMOffset instruction
 	// Turn off Wildcards
 	bWildcard = FALSE;
@@ -7088,15 +7089,12 @@ BOOL DoIATElimination(HANDLE thisProcess)
 
 BOOL GetOSDisplayString(LPSTR pszOS)
 {
-	OSVERSIONINFOEX osvi;
-	SYSTEM_INFO si;
+	OSVERSIONINFOEX osvi = { 0 };
+	SYSTEM_INFO si = { 0 };
 	PGNSI pGNSI;
 	HKEY key;
 	DWORD len;
 	LONG res;
-
-	ZeroMemory(&si, sizeof(SYSTEM_INFO));
-	ZeroMemory(&osvi, sizeof(OSVERSIONINFOEX));
 
 	osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
 
