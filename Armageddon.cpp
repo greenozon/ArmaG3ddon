@@ -5417,7 +5417,7 @@ BOOL ResolveProcess(HANDLE thisProcess)
 				}
 				else
 				{
-					if (readbyte = 0xCC)
+					if (readbyte == 0xCC)
 					{
 						if (!WriteProcessMemory(thisProcess, (LPVOID)rawaddr, &am.code,
 							sizeof(BYTE)*j, &dwWritten))
