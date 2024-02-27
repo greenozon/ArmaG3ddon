@@ -3892,7 +3892,8 @@ BOOL DetermineArmSections(HANDLE thisProcess)
 						Data1VMaddress != 0x00000000 &&
 						PdataVMaddress != 0x00000000)
 					{
-						sprintf(b, "PE section name: %s\n"
+						char buf[1024];
+						sprintf(buf, "PE section name: %s\n"
 							"There appears to be multiple occurrences\n"
 							"of Armadillo section names in this application!\n"
 							"Check the PE file using LordPE or similar and\n"
@@ -3905,7 +3906,7 @@ BOOL DetermineArmSections(HANDLE thisProcess)
 							"names that have been randomized!\n"
 							"If you have any problems after pressing the Cancel button,\n"
 							"Rerun and try pressing the OK button to continue!\n", CompName);
-						if (MessageBox(NULL, (LPCSTR)b, "PE section names alert!",
+						if (MessageBox(NULL, buf, "PE section names alert!",
 							MB_OKCANCEL + MB_SYSTEMMODAL + MB_ICONEXCLAMATION) == IDCANCEL)
 						{
 							goto NEXTSECT;
