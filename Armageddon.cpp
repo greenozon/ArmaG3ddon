@@ -1588,7 +1588,7 @@ BOOL LogNanomites(void)
 			return FALSE;
 		}
 		pNumNanos = 0;
-		for (it = SNano.begin(); it != SNano.end(); it++)
+		for (it = SNano.begin(); it != SNano.end(); ++it)
 		{
 			TNano[pNumNanos].Address = (DWORD)*it;
 			TNano[pNumNanos].Destination = 0;
@@ -4677,7 +4677,7 @@ ARMDONE:
 BOOL DisassembleDump(void)
 {
 	HANDLE	hFile5 = 0;
-	char	hex[10] = "FFFFFFFF", *end;
+//	char	hex[10] = "FFFFFFFF", *end;
 	BOOL	prevint3 = FALSE;
 	BOOL	prevretn = FALSE;
 	BOOL	prevcall = FALSE;
@@ -4962,7 +4962,7 @@ BOOL ResolveDump(void)
 {
 	HANDLE	hFile5 = 0;
 	DWORD_PTR	rawaddr = 0;
-	char	rawbuffer[TEXTLEN] = { 0 };
+	//char	rawbuffer[TEXTLEN] = { 0 };
 	DWORD	resolvednanos = 0;
 	BOOL    error = FALSE;
 	BYTE    dumpbyte = 0;
@@ -4981,11 +4981,11 @@ BOOL ResolveDump(void)
 		return FALSE;
 	}
 	// Find the last '\\' to obtain a pointer to just the base module name part
-	pszPathName = strrchr((char *)filebuffer, '\\');
+	pszPathName = strrchr(filebuffer, '\\');
 	if (pszPathName)  // We found a path, so advance to the base module name
 	{
 		pszPathName++;
-		strcpy(c, (const char *)pszPathName);
+		strcpy(c, pszPathName);
 	}
 	LogItem("------ Resolving Nanomites ------");
 	// Read the saved dump executable file for the PE header data
@@ -5185,11 +5185,11 @@ BOOL ResolveDump(void)
 		// Create our text command to convert
 		sprintf(ccmd, "%s %s", cjumptype, cjumpdest);
 		memset(&am, 0, sizeof(am));
-		pasm = (char *)ccmd;
+		pasm = ccmd;
 		// Assemble the command above. First try form with 32-bit immediate.
 		// Ex: pasm="JZ 004040BF";
 		j = 0;
-		j = Assemble(pasm, RNano[i].Address, &am, 0, 0, (char *)errtext);
+		j = Assemble(pasm, RNano[i].Address, &am, 0, 0, errtext);
 		if (j <= 0)
 		{
 			// We have an error! bypass this nanomite address
@@ -5205,7 +5205,13 @@ BOOL ResolveDump(void)
 			// Set file position accordingly
 			SetFilePointer(hFile5, rawaddr, NULL, FILE_BEGIN);
 			dumpbyte = 0;
-			ReadFile(hFile5, &dumpbyte, sizeof(dumpbyte), &dwRead, NULL);
+			if (!ReadFile(hFile5, &dumpbyte, sizeof(dumpbyte), &dwRead, NULL))
+			{
+				LogItem("ReadFile Error ResolveDump (0xCC)");
+				LogItem(NULL);
+				error = TRUE;
+				goto RESOLVEDONE;
+			}
 			if (dumpbyte == 0xCC)
 			{
 				SetFilePointer(hFile5, rawaddr, NULL, FILE_BEGIN);
@@ -5236,10 +5242,8 @@ RESOLVEDONE:
 	{
 		return FALSE;
 	}
-	else
-	{
-		return TRUE;
-	}
+	
+	return TRUE;
 }
 
 // Patch target process using nanomite vector
@@ -5348,7 +5352,7 @@ BOOL ResolveProcess(HANDLE thisProcess)
 			// Create our text command to convert
 			sprintf(ccmd, "%s %s", cjumptype, cjumpdest);
 			memset(&am, 0, sizeof(am));
-			pasm = (char *)ccmd;
+			pasm = ccmd;
 			// Assemble the command above. First try form with 32-bit immediate.
 			// Ex: pasm="JZ 004040BF";
 			j = 0;
@@ -5722,7 +5726,7 @@ BOOL DetermineStdHardwareFingerprint(HANDLE thisProcess, int errmode)
 	sprintf(b, "%02X", BEGFP);
 	sprintf(b + 2, "%08X", dwBMVMOffset);
 	ZeroMemory(&hextext, sizeof(hextext));
-	memcpy(hextext, (unsigned char *)b, 10);
+	memcpy(hextext, b, 10);
 	// Search for the 1st occurrence of PUSH dwBMVMOffset instruction
 	// Turn off Wildcards
 	bWildcard = FALSE;
@@ -5812,7 +5816,7 @@ BOOL DetermineStdHardwareFingerprint(HANDLE thisProcess, int errmode)
 		{
 		case 0:
 			sprintf(ccmd, "%s %s", cjumptype, cjumpdest);
-			pasm = (char *)ccmd;
+			pasm = ccmd;
 			memset(&am, 0, sizeof(am));
 			memcpy(&bhwfp, &dwstdfp, sizeof(DWORD_PTR));
 			am.code[0] = 0xB8;
@@ -5824,7 +5828,7 @@ BOOL DetermineStdHardwareFingerprint(HANDLE thisProcess, int errmode)
 			break;
 		case 1:
 			sprintf(ccmd, "%s", cjumptype);
-			pasm = (char *)ccmd;
+			pasm = ccmd;
 			memset(&am, 0, sizeof(am));
 			am.code[0] = 0xC2;
 			am.code[1] = 0x04;
@@ -6008,7 +6012,7 @@ BOOL DetermineEnhHardwareFingerprint(HANDLE thisProcess, int errmode)
 		{
 		case 0:
 			sprintf(ccmd, "%s %s", cjumptype, cjumpdest);
-			pasm = (char *)ccmd;
+			pasm = ccmd;
 			memset(&am, 0, sizeof(am));
 			memcpy(&bhwfp, &dwenhfp, sizeof(DWORD_PTR));
 			am.code[0] = 0xB8;
@@ -6020,7 +6024,7 @@ BOOL DetermineEnhHardwareFingerprint(HANDLE thisProcess, int errmode)
 			break;
 		case 1:
 			sprintf(ccmd, "%s", cjumptype);
-			pasm = (char *)ccmd;
+			pasm = ccmd;
 			memset(&am, 0, sizeof(am));
 			am.code[0] = 0xC2;
 			am.code[1] = 0x04;
@@ -7174,7 +7178,6 @@ void InitializeVariables(void)
 	sznewCmdline = 0;
 	dwVMAddress = 0;
 	SavedwBMVMAddress = 0;
-	hFile = 0;
 	hFile1 = 0;
 	LastUpdate = 0;
 	numitems = 0;
@@ -8420,14 +8423,14 @@ unsigned __stdcall RunExe(void *)
 													if (strlen(cjumpdest) > 0)
 													{
 														sprintf(ccmd, "%s %s", cjumptype, cjumpdest);
-														pasm = (char *)ccmd;
+														pasm = ccmd;
 														memset(&am, 0, sizeof(am));
 														j = Assemble(pasm, DwordRead, &am, 0, 0, (char *)errtext);
 													}
 													else
 													{
 														sprintf(ccmd, "%s", cjumptype);
-														pasm = (char *)ccmd;
+														pasm = ccmd;
 														memset(&am, 0, sizeof(am));
 														am.code[0] = 0xC3;
 														j = 1;
@@ -10929,22 +10932,35 @@ void ResizeBitmap(HWND hwnd, int iimg, HBITMAP *phnewbmp)
 {
 	// Get the window's size
 	GetClientRect(hwnd, &Rect);
-	Gdiplus::Bitmap *newbmp = new Gdiplus::Bitmap(Rect.right, Rect.bottom, PixelFormat32bppPARGB);
-	Gdiplus::Graphics *gr = new Gdiplus::Graphics(newbmp);
+	Gdiplus::Bitmap newbmp(Rect.right, Rect.bottom, PixelFormat32bppPARGB);
+	Gdiplus::Graphics gr(&newbmp);
 	HRSRC hrsrc = FindResource(hinst, MAKEINTRESOURCE(iimg), "IMAGE");
-	HGLOBAL grsrc = LoadResource(hinst, hrsrc);
-	LPVOID mem = LockResource(grsrc);
-	LPSTREAM strm = NULL;
-	CreateStreamOnHGlobal(NULL, TRUE, &strm);
-	strm->Write(mem, SizeofResource(hinst, hrsrc), NULL);
-	Gdiplus::Bitmap *oldbmp = (Gdiplus::Bitmap *)Gdiplus::Bitmap::FromStream(strm);
-	strm->Release();
-	gr->Graphics::DrawImage(oldbmp, 0, 0, Rect.right, Rect.bottom);
-	// Creates a gdi bitmap from gdi+
-	newbmp->Bitmap::GetHBITMAP(Gdiplus::Color(0, 0, 0, 0), phnewbmp);
-	delete gr;
-	delete newbmp;
-	delete oldbmp;
+	if (hrsrc)
+	{
+		HGLOBAL grsrc = LoadResource(hinst, hrsrc);
+		if (grsrc)
+		{
+			LPVOID mem = LockResource(grsrc);
+			if (mem)
+			{
+				LPSTREAM strm = NULL;
+				HRESULT hr = CreateStreamOnHGlobal(NULL, TRUE, &strm);
+				if (SUCCEEDED(hr))
+				{
+					strm->Write(mem, SizeofResource(hinst, hrsrc), NULL);
+					Gdiplus::Bitmap* oldbmp = Gdiplus::Bitmap::FromStream(strm);
+					strm->Release();
+					if (oldbmp)
+					{
+						gr.Graphics::DrawImage(oldbmp, 0, 0, Rect.right, Rect.bottom);
+						// Creates a gdi bitmap from gdi+
+						newbmp.Bitmap::GetHBITMAP(Gdiplus::Color(0, 0, 0, 0), phnewbmp);
+						delete oldbmp;
+					}
+				}
+			}
+		}
+	}
 }
 // Create our main dialog box
 int APIENTRY WinMain(HINSTANCE hinst, HINSTANCE hinstPrev, LPSTR lpCmdLine, int nCmdShow)
