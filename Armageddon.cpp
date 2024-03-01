@@ -817,7 +817,7 @@ BOOL CALLBACK EnumWindowsProc(HWND hwnd, LPARAM lParam)
 /* display application information messages */
 void MessageBoxInformation(char *text)
 {
-	MessageBox(NULL, (LPCSTR)text, "ArmaGeddon", MB_OK + MB_SYSTEMMODAL + MB_ICONINFORMATION);
+	MessageBox(NULL, text, "ArmaGeddon", MB_OK + MB_SYSTEMMODAL + MB_ICONINFORMATION);
 	return;
 }
 
@@ -936,14 +936,14 @@ void FreeBeaEngine(void)
 // Load BeaEngine.dll dynamically for disassembling code
 BOOL LoadBeaEngine(void)
 {
-	hinstLib = LoadLibraryA((LPCSTR)"BeaEngine.dll");
+	hinstLib = LoadLibraryA("BeaEngine.dll");
 	// check to make sure LoadLibrary() didn't return NULL 
 	if (hinstLib == NULL)
 	{
 		LogItem("LoadLibrary error: BeaEngine.dll");
 		return FALSE;
 	}
-	ProcAdd = (MYPROC)GetProcAddress(hinstLib, (LPCSTR)"_Disasm@4");
+	ProcAdd = (MYPROC)GetProcAddress(hinstLib, "_Disasm@4");
 	if (ProcAdd == NULL)
 	{
 		LogItem("GetProcAddress error: _Disasm@4");
@@ -1133,14 +1133,14 @@ int GetNanoAnfName(LPCSTR nanobuffer)
 BOOL ArmNF_Init(void)
 {
 	// Get a handle to the dll's we want
-	hdisasmdll = GetModuleHandle((LPCSTR)"disasm.dll");
+	hdisasmdll = GetModuleHandle("disasm.dll");
 	if (!hdisasmdll)
 	{
 		LogItem("Module: disasm.dll; Function: GetModuleHandle Failed");
 		return FALSE;
 	}
 	// Find the proc address to the function we want
-	AsmAddr = (FARPROC)GetProcAddress(hdisasmdll, (LPCSTR)"_Assemble@24");
+	AsmAddr = (FARPROC)GetProcAddress(hdisasmdll, "_Assemble@24");
 	if (!AsmAddr)
 	{
 		LogItem("Function Assemble, GetProcAddress Failed");
@@ -1148,7 +1148,7 @@ BOOL ArmNF_Init(void)
 	}
 	AssembleAddress = (DWORD)AsmAddr;
 	// Find the proc address to the function we want
-	DsmAddr = (FARPROC)GetProcAddress(hdisasmdll, (LPCSTR)"_Disasm@20");
+	DsmAddr = (FARPROC)GetProcAddress(hdisasmdll, "_Disasm@20");
 	if (!DsmAddr)
 	{
 		LogItem("Function Disasm, GetProcAddress Failed");
@@ -1170,7 +1170,7 @@ unsigned __stdcall ArmNF_Analyze(void *)
 	typed td = { 0 };
 	int retncd = 0;
 	// Resolve nanomites in saved dumped exe file
-	if (!GetDumpName((LPCSTR)filebuffer))
+	if (!GetDumpName(filebuffer))
 	{
 		memset(filebuffer, 0, sizeof(filebuffer));
 		goto ANALRETN;
@@ -1196,7 +1196,7 @@ int ArmNF_WriteTableToFile(void)
 		return 1;
 	}
 	// Create a nano file
-	if (!PutNanoName((LPCSTR)nanobuffer))
+	if (!PutNanoName(nanobuffer))
 	{
 		LogItem("Save nanomites table canceled");
 		memset(nanobuffer, 0, sizeof(nanobuffer));
@@ -1316,7 +1316,7 @@ void ArmNF_DumpNanos(void)
 				sprintf(ibuf, "Unknown error");
 				break;
 			}
-			LogItem((LPSTR)ibuf);
+			LogItem(ibuf);
 			return;
 		}
 		else if (NFlog.TRN == 0)
@@ -1380,7 +1380,7 @@ BOOL SaveNano(void)
 	HANDLE	hFile3 = 0;
 
 	// Create a nano file
-	if (!PutNanoName((LPCSTR)nanobuffer))
+	if (!PutNanoName(nanobuffer))
 	{
 		memset(nanobuffer, 0, sizeof(nanobuffer));
 		return FALSE;
@@ -1390,10 +1390,10 @@ BOOL SaveNano(void)
 	if (pszPathName)  // We found a path, so advance to the base module name
 	{
 		pszPathName++;
-		strcpy(c, (const char *)pszPathName);
+		strcpy(c, pszPathName);
 	}
 	LogItem("Saving Nanomites table...");
-	hFile3 = CreateFile((LPCSTR)nanobuffer,     // file to create
+	hFile3 = CreateFile(nanobuffer,     // file to create
 		GENERIC_WRITE,          // open for read/write
 		FILE_SHARE_READ | FILE_SHARE_WRITE,       // share for read/write
 		NULL,                  // default security
@@ -1488,7 +1488,7 @@ void LocateNanomites(void)
 	ReportedTotal = FALSE;
 	LogItem("Initializing...");
 	memset(&RStruct, 0, sizeof(RStruct));
-	DoNanomites((SIZE_T)UpdateCB, &RStruct, (LPSTR)buffer, (LPSTR)nbuf, pNumNanos, &TNano[0]);
+	DoNanomites((SIZE_T)UpdateCB, &RStruct, buffer, nbuf, pNumNanos, &TNano[0]);
 	if (TNano)
 	{
 		delete[] TNano;
@@ -1541,7 +1541,7 @@ BOOL LogNanomites(void)
 	ReportedTotal = FALSE;
 	LogItem("Initializing...");
 	memset(&LStruct, 0, sizeof(LStruct));
-	DoLogNanomites((SIZE_T)UpdateCBlog, &LStruct, (LPSTR)buffer, (LPSTR)nbuf);
+	DoLogNanomites((SIZE_T)UpdateCBlog, &LStruct, buffer, nbuf);
 	if (LStruct.LogNanos == 0)
 	{
 		LogNanos = 0;
@@ -1806,32 +1806,32 @@ BOOL AreInverse(char *O1, char *O2)
 	char	R3[TEXTLEN] = { 0 };
 	char	R4[TEXTLEN] = { 0 };
 
-	if (strncmp((const char *)O1, "not", 3) == 0)
+	if (strncmp(O1, "not", 3) == 0)
 	{
 		if (strcmp(O1, O2) == 0)
 			return TRUE;
 	}
-	else if (strncmp((const char *)O1, "pushfd", 6) == 0)
+	else if (strncmp(O1, "pushfd", 6) == 0)
 	{
-		if (strncmp((const char *)O2, "popfd", 5) == 0)
+		if (strncmp(O2, "popfd", 5) == 0)
 			return TRUE;
 	}
-	else if (strncmp((const char *)O1, "pushad", 6) == 0)
+	else if (strncmp(O1, "pushad", 6) == 0)
 	{
-		if (strncmp((const char *)O2, "popad", 5) == 0)
+		if (strncmp(O2, "popad", 5) == 0)
 			return TRUE;
 	}
-	else if (strncmp((const char *)O1, "push", 4) == 0)
+	else if (strncmp(O1, "push", 4) == 0)
 	{
-		if (strncmp((const char *)O2, "pop", 3) == 0 &&
-			strncmp((const char *)O1 + 5, (const char *)O2 + 4, strlen(O1) - 4) == 0)
+		if (strncmp(O2, "pop", 3) == 0 &&
+			strncmp(O1 + 5, O2 + 4, strlen(O1) - 4) == 0)
 			return TRUE;
 	}
-	else if (strncmp((const char *)O1, "xchg", 4) == 0)
+	else if (strncmp(O1, "xchg", 4) == 0)
 	{
 		if (strcmp(O1, O2) == 0)
 			return TRUE;
-		if (strncmp((const char *)O2, "xchg", 4) == 0)
+		if (strncmp(O2, "xchg", 4) == 0)
 		{
 			pComma = strchr(O1, ',');
 			Comma = (int)(pComma - O1);
@@ -1845,13 +1845,13 @@ BOOL AreInverse(char *O1, char *O2)
 				strncpy(R2, O1 + Comma + 2, (Comma - 5));
 				strncpy(R3, O2 + 5, (Comma - 5));
 				strncpy(R4, O2 + Comma + 2, (Comma - 5));
-				if (strncmp((const char *)R1, (const char *)R4, strlen(R1)) == 0 &&
-					strncmp((const char *)R2, (const char *)R3, strlen(R2)) == 0)
+				if (strncmp(R1, R4, strlen(R1)) == 0 &&
+					strncmp(R2, R3, strlen(R2)) == 0)
 					return TRUE;
 			}
 		}
 	}
-	else if (strncmp((const char *)O1, "bswap", 5) == 0)
+	else if (strncmp(O1, "bswap", 5) == 0)
 	{
 		if (strcmp(O1, O2) == 0)
 			return TRUE;
@@ -1915,7 +1915,7 @@ void DoRC1(Instruction *Ins, int StartI, int EndI)
 							if (J > I + 1)
 							{
 								DoRC1(Ins, I + 1, J);
-								if (strncmp((const char *)Ins[I].Opcode, "push", 4) == 0)
+								if (strncmp(Ins[I].Opcode, "push", 4) == 0)
 								{
 									StackCount = 0;
 									pComma = strchr(Ins[I].Opcode, ' ');
@@ -1927,11 +1927,11 @@ void DoRC1(Instruction *Ins, int StartI, int EndI)
 									{
 										if (Ins[K].Active)
 										{
-											if (strncmp((const char *)Ins[K].Opcode, "push", 4) == 0)
+											if (strncmp(Ins[K].Opcode, "push", 4) == 0)
 											{
 												StackCount++;
 											}
-											else if (strncmp((const char *)Ins[K].Opcode, "pop", 3) == 0)
+											else if (strncmp(Ins[K].Opcode, "pop", 3) == 0)
 											{
 												StackCount--;
 											}
@@ -1986,12 +1986,12 @@ void DoRC(Instruction *Ins, int StartI, int EndI)
 		// Remove all instructions within "PUSHAD" / "PUSHFD and "POPAD" / "POPFD"
 		for (I = StartI; I <= EndI; I++)
 		{
-			if (strncmp((const char *)Ins[I].Opcode, "pushad", 6) == 0)
+			if (strncmp(Ins[I].Opcode, "pushad", 6) == 0)
 			{
 				// Find last POP instruction
 				for (J = EndI; J >= StartI; J--)
 				{
-					if (strncmp((const char *)Ins[J].Opcode, "popad", 5) == 0)
+					if (strncmp(Ins[J].Opcode, "popad", 5) == 0)
 					{
 						// Invalidate all instructions within
 						for (K = I; K <= J; K++)
@@ -2001,12 +2001,12 @@ void DoRC(Instruction *Ins, int StartI, int EndI)
 					}
 				}
 			}
-			if (strncmp((const char *)Ins[I].Opcode, "pushfd", 6) == 0)
+			if (strncmp(Ins[I].Opcode, "pushfd", 6) == 0)
 			{
 				// Find last POP instruction
 				for (J = EndI; J >= StartI; J--)
 				{
-					if (strncmp((const char *)Ins[J].Opcode, "popfd", 5) == 0)
+					if (strncmp(Ins[J].Opcode, "popfd", 5) == 0)
 					{
 						// Invalidate all instructions within
 						for (K = I; K <= J; K++)
@@ -2029,11 +2029,11 @@ void DoRC(Instruction *Ins, int StartI, int EndI)
 		// Remove all redundant single commands
 		for (I = EndI; I >= StartI; I--)
 		{
-			if (strncmp((const char *)Ins[I].Opcode, "j", 1) == 0)
+			if (strncmp(Ins[I].Opcode, "j", 1) == 0)
 			{
 				Ins[I].Active = FALSE;
 			}
-			else if (strncmp((const char *)Ins[I].Opcode, "xchg", 4) == 0)
+			else if (strncmp(Ins[I].Opcode, "xchg", 4) == 0)
 			{
 				pComma = strchr(Ins[I].Opcode, ',');
 				Comma = (int)(pComma - Ins[I].Opcode);
@@ -2046,7 +2046,7 @@ void DoRC(Instruction *Ins, int StartI, int EndI)
 					Ins[I].Active = FALSE;
 				}
 			}
-			else if (strncmp((const char *)Ins[I].Opcode, "mov", 3) == 0)
+			else if (strncmp(Ins[I].Opcode, "mov", 3) == 0)
 			{
 				pComma = strchr(Ins[I].Opcode, ',');
 				Comma = (int)(pComma - Ins[I].Opcode);
@@ -2059,7 +2059,7 @@ void DoRC(Instruction *Ins, int StartI, int EndI)
 					Ins[I].Active = FALSE;
 				}
 			}
-			else if (strncmp((const char *)Ins[I].Opcode, "nop", 3) == 0)
+			else if (strncmp(Ins[I].Opcode, "nop", 3) == 0)
 			{
 				Ins[I].Active = FALSE;
 			}
@@ -2083,8 +2083,8 @@ void DoRC(Instruction *Ins, int StartI, int EndI)
 				{
 					if (Ins[J].Active)
 					{
-						if (strncmp((const char *)Ins[I].Opcode, "not", 3) == 0 ||
-							strncmp((const char *)Ins[I].Opcode, "bswap", 5) == 0)
+						if (strncmp(Ins[I].Opcode, "not", 3) == 0 ||
+							strncmp(Ins[I].Opcode, "bswap", 5) == 0)
 						{
 							if (AreInverse(Ins[I].Opcode, Ins[J].Opcode))
 							{
@@ -2093,7 +2093,7 @@ void DoRC(Instruction *Ins, int StartI, int EndI)
 								break;
 							}
 						}
-						else if (strncmp((const char *)Ins[I].Opcode, "xchg", 4) == 0)
+						else if (strncmp(Ins[I].Opcode, "xchg", 4) == 0)
 						{
 							if (AreInverse(Ins[I].Opcode, Ins[J].Opcode))
 							{
@@ -2101,7 +2101,7 @@ void DoRC(Instruction *Ins, int StartI, int EndI)
 								Ins[J].Active = FALSE;
 								break;
 							}
-							if (strncmp((const char *)Ins[J].Opcode, "xchg", 4) == 0)
+							if (strncmp(Ins[J].Opcode, "xchg", 4) == 0)
 							{
 								pComma = strchr(Ins[I].Opcode, ',');
 								Comma = (int)(pComma - Ins[I].Opcode);
@@ -2149,9 +2149,9 @@ void DoRC(Instruction *Ins, int StartI, int EndI)
 				{
 					if (Ins[J].Active)
 					{
-						if (strncmp((const char *)Ins[I].Opcode, "not", 3) == 0 ||
-							strncmp((const char *)Ins[I].Opcode, "bswap", 5) == 0 ||
-							strncmp((const char *)Ins[I].Opcode, "xchg", 4) == 0)
+						if (strncmp(Ins[I].Opcode, "not", 3) == 0 ||
+							strncmp(Ins[I].Opcode, "bswap", 5) == 0 ||
+							strncmp(Ins[I].Opcode, "xchg", 4) == 0)
 						{
 							if (AreInverse(Ins[I].Opcode, Ins[J].Opcode))
 							{
@@ -2183,9 +2183,9 @@ void DoRC(Instruction *Ins, int StartI, int EndI)
 				{
 					if (Ins[J].Active)
 					{
-						if (strncmp((const char *)Ins[I].Opcode, "xchg", 4) == 0)
+						if (strncmp(Ins[I].Opcode, "xchg", 4) == 0)
 						{
-							if (strncmp((const char *)Ins[J].Opcode, "xchg", 4) == 0)
+							if (strncmp(Ins[J].Opcode, "xchg", 4) == 0)
 							{
 								if (strlen(Ins[I].Opcode) == strlen(Ins[J].Opcode))
 								{
@@ -2327,13 +2327,13 @@ void FixSplice(DWORD_PTR Address, DWORD_PTR Redirect)
 			{
 				lofinst = 1;
 			}
-			NumBytes = strlen((const char *)MyDisasm.CompleteInstr);
+			NumBytes = strlen(MyDisasm.CompleteInstr);
 			memset(Opcodes, 0, sizeof(Opcodes));
 			memset(&Instrs[NumInstr].Opcode, 0, sizeof(Instrs[NumInstr].Opcode));
 			memset(&Instrs[NumInstr].Length, 0, sizeof(Instrs[NumInstr].Length));
 			memset(&Instrs[NumInstr].Bytes, 0, sizeof(Instrs[NumInstr].Bytes));
 			memset(&Instrs[NumInstr].Active, 0, sizeof(Instrs[NumInstr].Active));
-			strncpy(Opcodes, (const char *)MyDisasm.CompleteInstr, NumBytes);
+			strncpy(Opcodes, MyDisasm.CompleteInstr, NumBytes);
 			strncpy(Instrs[NumInstr].Opcode, Opcodes, NumBytes);
 			Instrs[NumInstr].Length = lofinst;
 			for (I = 0; I < lofinst; I++)
@@ -2408,8 +2408,8 @@ COMPILE:
 	}
 	// Warning message issued for last instruction:
 	I = NumInstr - 1;
-	if ((strncmp((const char *)Instrs[I].Opcode, "mov edi,edi", 11) == 0 ||
-		strncmp((const char *)Instrs[I].Opcode, "mov eax,eax", 11) == 0) &&
+	if ((strncmp(Instrs[I].Opcode, "mov edi,edi", 11) == 0 ||
+		strncmp(Instrs[I].Opcode, "mov eax,eax", 11) == 0) &&
 		!Instrs[I].Active)
 	{
 		LogItem("Potential residue after %08X [Accepted]", Address);
@@ -2739,7 +2739,7 @@ void DoSearch(int type, int which)
 	else if (type == 2)
 	{
 		std::string strhex = ((char *)hextext);
-		memcpy(outtext, (unsigned char *)hextext, strhex.size());
+		memcpy(outtext, hextext, strhex.size());
 		strhex.clear();
 	}
 	else if (type == 3)
@@ -2800,7 +2800,7 @@ void SaveLogfile(void)
 		}
 		return;
 	}
-	hFile2 = CreateFile((LPCSTR)logbuffer,     // file to create
+	hFile2 = CreateFile(logbuffer,     // file to create
 		GENERIC_WRITE,          // open for read/write
 		FILE_SHARE_READ | FILE_SHARE_WRITE,       // share for read/write
 		NULL,                  // default security
@@ -2838,7 +2838,7 @@ void SaveLogfile(void)
 BOOL LoadNanoAnf(void)
 {
 	// load a nano *.anf file
-	if (!GetNanoAnfName((LPCSTR)nanobuffer))
+	if (!GetNanoAnfName(nanobuffer))
 	{
 		memset(nanobuffer, 0, sizeof(nanobuffer));
 		return FALSE;
@@ -2848,12 +2848,12 @@ BOOL LoadNanoAnf(void)
 	if (pszPathName)  // We found a path, so advance to the base module name
 	{
 		pszPathName++;
-		strcpy(c, (const char *)pszPathName);
+		strcpy(c, pszPathName);
 	}
 	LogItem("Loading Nanomites table...");
 
 	HANDLE		hFile4 = 0;
-	hFile4 = CreateFile((LPCSTR)nanobuffer,
+	hFile4 = CreateFile(nanobuffer,
 		GENERIC_READ,
 		FILE_SHARE_READ | FILE_SHARE_WRITE,
 		NULL,                  // default security
@@ -2904,7 +2904,7 @@ BOOL LoadNanoAnf(void)
 BOOL LoadIniFile(void)
 {
 	// open a saved options file
-	if (!GetIniFileName((LPCSTR)inibuffer))
+	if (!GetIniFileName(inibuffer))
 	{
 		memset(inibuffer, 0, sizeof(inibuffer));
 		return FALSE;
@@ -3202,7 +3202,7 @@ BOOL LoadIniFile(void)
 // Save armageddon options "*.ini" file
 BOOL SaveIniFile(void)
 {
-	if (PutIniFileName((LPCSTR)inisavebuffer))
+	if (!PutIniFileName(inisavebuffer))
 	{
 		memset(inisavebuffer, 0, sizeof(inisavebuffer));
 		return FALSE;
@@ -3617,10 +3617,10 @@ BOOL DetermineArmSections(HANDLE thisProcess)
 	if (pszPathName)  // We found a path, so advance to the base module name
 	{
 		pszPathName++;
-		strcpy(c, (const char *)pszPathName);
+		strcpy(c, pszPathName);
 	}
 	// Read the target executable file for the PE header data
-	hFile1 = CreateFile((LPCSTR)buffer,     // file to create
+	hFile1 = CreateFile(buffer,     // file to create
 		GENERIC_READ,          // open for reading
 		FILE_SHARE_READ,       // share for reading
 		NULL,                  // default security
@@ -3711,8 +3711,8 @@ BOOL DetermineArmSections(HANDLE thisProcess)
 			memset(SuprName, 0, sizeof(SuprName));
 			memcpy(SuprName, pImgLSectHdr->Name, IMAGE_SIZEOF_SHORT_NAME);
 			CompName = strupr(SuprName);
-			if ((strncmp((const char *)CompName, ".PDATA", 6) == 0 ||
-				strncmp((const char *)CompName, "PDATA", 5) == 0 ||
+			if ((strncmp(CompName, ".PDATA", 6) == 0 ||
+				strncmp(CompName, "PDATA", 5) == 0 ||
 				(pImgLSectHdr->Characteristics >= 0xC0000040 && pImgLSectHdr->Characteristics <= 0xC1000000
 				&& pImgLSectHdr->SizeOfRawData > 0x00000000)))
 			{
@@ -3755,7 +3755,7 @@ BOOL DetermineArmSections(HANDLE thisProcess)
 			CompName = strupr(SuprName);
 
 			// UPX specific
-			if (strncmp((const char *)CompName, "UPX0", 4) == 0 &&
+			if (strncmp(CompName, "UPX0", 4) == 0 &&
 				n == 0)
 			{
 				if (UPX0VMaddress == 0x00000000)
@@ -3768,7 +3768,7 @@ BOOL DetermineArmSections(HANDLE thisProcess)
 					goto DOTEXT;
 				}
 			}
-			if (strncmp((const char *)CompName, "UPX1", 4) == 0 &&
+			if (strncmp(CompName, "UPX1", 4) == 0 &&
 				n == 1)
 			{
 				if (UPX1VMaddress == 0x00000000)
@@ -3779,10 +3779,10 @@ BOOL DetermineArmSections(HANDLE thisProcess)
 				}
 			}
 			// Armadillo specific
-			if (strncmp((const char *)CompName, ".TEXT", 5) == 0 ||
-				strncmp((const char *)CompName, ".CODE", 5) == 0 ||
-				strncmp((const char *)CompName, "TEXT", 4) == 0 ||
-				strncmp((const char *)CompName, "CODE", 4) == 0 ||
+			if (strncmp(CompName, ".TEXT", 5) == 0 ||
+				strncmp(CompName, ".CODE", 5) == 0 ||
+				strncmp(CompName, "TEXT", 4) == 0 ||
+				strncmp(CompName, "CODE", 4) == 0 ||
 				n == 0)
 			{
 				// Make sure the characteristics are correct
@@ -3801,8 +3801,8 @@ BOOL DetermineArmSections(HANDLE thisProcess)
 				}
 			}
 			// For randomized PE section names, this may have to be adjusted
-			if (strncmp((const char *)CompName, ".ITEXT", 6) == 0 ||
-				strncmp((const char *)CompName, "ITEXT", 5) == 0 ||
+			if (strncmp(CompName, ".ITEXT", 6) == 0 ||
+				strncmp(CompName, "ITEXT", 5) == 0 ||
 				n == 1)
 			{
 				// Make sure the characteristics are correct
@@ -3826,8 +3826,8 @@ BOOL DetermineArmSections(HANDLE thisProcess)
 					}
 				}
 			}
-			if ((strncmp((const char *)CompName, ".RDATA", 6) == 0 ||
-				strncmp((const char *)CompName, "RDATA", 5) == 0 ||
+			if ((strncmp(CompName, ".RDATA", 6) == 0 ||
+				strncmp(CompName, "RDATA", 5) == 0 ||
 				(pImgSectHdr->Characteristics >= 0x40000040 && pImgSectHdr->Characteristics <= 0x51000000)))
 			{
 				if (RdataVMaddress == 0x00000000)
@@ -3843,8 +3843,8 @@ BOOL DetermineArmSections(HANDLE thisProcess)
 				}
 			}
 			// Mod to resolve problem with section names where .text1 is not found!!
-			if ((strncmp((const char *)CompName, ".TEXT1", 6) == 0 ||
-				strncmp((const char *)CompName, "TEXT1", 5) == 0 ||
+			if ((strncmp(CompName, ".TEXT1", 6) == 0 ||
+				strncmp(CompName, "TEXT1", 5) == 0 ||
 				(pImgSectHdr->Characteristics >= 0xE0000020 && pImgSectHdr->Characteristics <= 0xE1000000) ||
 				(pImgSectHdr->Characteristics >= 0x60000020 && pImgSectHdr->Characteristics <= 0x61000000)) &&
 				n > 1 && pImgSectHdr->SizeOfRawData >= 0x00010000)
@@ -3901,8 +3901,8 @@ BOOL DetermineArmSections(HANDLE thisProcess)
 					}
 				}
 			}
-			if ((strncmp((const char *)CompName, ".ADATA", 6) == 0 ||
-				strncmp((const char *)CompName, "ADATA", 5) == 0 ||
+			if ((strncmp(CompName, ".ADATA", 6) == 0 ||
+				strncmp(CompName, "ADATA", 5) == 0 ||
 				(pImgSectHdr->Characteristics >= 0xE0000020 && pImgSectHdr->Characteristics <= 0xE1000000) ||
 				(pImgSectHdr->Characteristics >= 0x60000020 && pImgSectHdr->Characteristics <= 0x61000000)) && (text1found))
 			{
@@ -3916,14 +3916,14 @@ BOOL DetermineArmSections(HANDLE thisProcess)
 				}
 			}
 			// Extraneous PE sections we don't need
-			if (strncmp((const char *)CompName, ".RSRC", 5) == 0 ||
-				strncmp((const char *)CompName, "RSRC", 4) == 0)
+			if (strncmp(CompName, ".RSRC", 5) == 0 ||
+				strncmp(CompName, "RSRC", 4) == 0)
 			{
 				// skip it!
 				goto NEXTSECT;
 			}
-			if (strncmp((const char *)CompName, ".RELOC", 6) == 0 ||
-				strncmp((const char *)CompName, "RELOC", 5) == 0)
+			if (strncmp(CompName, ".RELOC", 6) == 0 ||
+				strncmp(CompName, "RELOC", 5) == 0)
 			{
 				if (RelocVMaddress == 0x00000000)
 				{
@@ -3932,14 +3932,14 @@ BOOL DetermineArmSections(HANDLE thisProcess)
 					goto NEXTSECT;
 				}
 			}
-			if (strncmp((const char *)CompName, ".DEBUG", 6) == 0 ||
-				strncmp((const char *)CompName, "DEBUG", 5) == 0)
+			if (strncmp(CompName, ".DEBUG", 6) == 0 ||
+				strncmp(CompName, "DEBUG", 5) == 0)
 			{
 				// skip it!
 				goto NEXTSECT;
 			}
-			if (strncmp((const char *)CompName, ".BSS", 4) == 0 ||
-				strncmp((const char *)CompName, "BSS", 3) == 0)
+			if (strncmp(CompName, ".BSS", 4) == 0 ||
+				strncmp(CompName, "BSS", 3) == 0)
 			{
 				if (BssVMaddress == 0x00000000)
 				{
@@ -3948,14 +3948,14 @@ BOOL DetermineArmSections(HANDLE thisProcess)
 					goto NEXTSECT;
 				}
 			}
-			if (strncmp((const char *)CompName, ".TLS", 4) == 0 ||
-				strncmp((const char *)CompName, "TLS", 3) == 0)
+			if (strncmp(CompName, ".TLS", 4) == 0 ||
+				strncmp(CompName, "TLS", 3) == 0)
 			{
 				// skip it!
 				goto NEXTSECT;
 			}
-			if (strncmp((const char *)CompName, ".DATA", 5) == 0 ||
-				strncmp((const char *)CompName, "DATA", 4) == 0 ||
+			if (strncmp(CompName, ".DATA", 5) == 0 ||
+				strncmp(CompName, "DATA", 4) == 0 ||
 				(pImgSectHdr->Characteristics >= 0xC0000040 && pImgSectHdr->Characteristics <= 0xC1000000
 				&& pImgSectHdr->SizeOfRawData > 0x00000000))
 			{
@@ -3969,8 +3969,8 @@ BOOL DetermineArmSections(HANDLE thisProcess)
 					goto NEXTSECT;
 				}
 			}
-			if ((strncmp((const char *)CompName, ".IDATA", 6) == 0 ||
-				strncmp((const char *)CompName, "IDATA", 5) == 0 ||
+			if ((strncmp(CompName, ".IDATA", 6) == 0 ||
+				strncmp(CompName, "IDATA", 5) == 0 ||
 				(pImgSectHdr->Characteristics >= 0xC0000040 && pImgSectHdr->Characteristics <= 0xC1000000)) &&
 				(pImgSectHdr->Misc.VirtualSize <= 0x00010000 && datafound))
 			{
@@ -3983,8 +3983,8 @@ BOOL DetermineArmSections(HANDLE thisProcess)
 					goto NEXTSECT;
 				}
 			}
-			if ((strncmp((const char *)CompName, ".DATA1", 6) == 0 ||
-				strncmp((const char *)CompName, "DATA1", 5) == 0 ||
+			if ((strncmp(CompName, ".DATA1", 6) == 0 ||
+				strncmp(CompName, "DATA1", 5) == 0 ||
 				(pImgSectHdr->Characteristics >= 0xC0000040 && pImgSectHdr->Characteristics <= 0xC1000000)) &&
 				(pImgSectHdr->Misc.VirtualSize >= 0x00010000 && text1found && datafound &&
 				// it is not the last section
@@ -3999,9 +3999,10 @@ BOOL DetermineArmSections(HANDLE thisProcess)
 					goto NEXTSECT;
 				}
 			}
-			if ((strncmp((const char *)CompName, ".PDATA", 6) == 0 ||
-				strncmp((const char *)CompName, "PDATA", 5) == 0 ||
-				(pImgSectHdr->Characteristics >= 0xC0000040 && pImgSectHdr->Characteristics <= 0xC1000000)) && (pImgSectHdr->SizeOfRawData > 0x00000000 && text1found))
+			if ((strncmp(CompName, ".PDATA", 6) == 0 ||
+				strncmp(CompName, "PDATA", 5) == 0 ||
+				(pImgSectHdr->Characteristics >= 0xC0000040 && pImgSectHdr->Characteristics <= 0xC1000000)) 
+				&& (pImgSectHdr->SizeOfRawData > 0x00000000 && text1found))
 			{
 				if (PdataVMaddress == 0x00000000)
 				{
@@ -4119,7 +4120,7 @@ void CreateDump(HANDLE thisProcess, int dumparmvm)
 		char *base = strrchr(buffer, '\\');
 		StringCchPrintf(savebuffer, MAX_PATH, "%.*s\\dump.exe", base - buffer, buffer);
 	}
-	else if (!PutFileName((LPCSTR)savebuffer))
+	else if (!PutFileName(savebuffer))
 	{
 		memset(savebuffer, 0, sizeof(savebuffer));
 		return;
@@ -4129,11 +4130,11 @@ void CreateDump(HANDLE thisProcess, int dumparmvm)
 	if (pszPathName)  // We found a path, so advance to the base module name
 	{
 		pszPathName++;
-		strcpy(c, (const char *)pszPathName);
+		strcpy(c, pszPathName);
 	}
 	LogItem("%s", isep);
 	LogItem("%s", h);
-	hFile = CreateFile((LPCSTR)savebuffer,     // file to create
+	hFile = CreateFile(savebuffer,     // file to create
 		GENERIC_READ | GENERIC_WRITE,          // open for read/write
 		FILE_SHARE_READ | FILE_SHARE_WRITE,        // share
 		NULL,                   // default security
@@ -4227,8 +4228,8 @@ void CreateDump(HANDLE thisProcess, int dumparmvm)
 			// This is the pointer to the overlay data if needed
 			dwFileOffset = pImgSectHdr->PointerToRawData +
 				pImgSectHdr->SizeOfRawData;
-			if (strncmp((const char *)CompName, ".RDATA", 6) == 0 ||
-				strncmp((const char *)CompName, "RDATA", 5) == 0)
+			if (strncmp(CompName, ".RDATA", 6) == 0 ||
+				strncmp(CompName, "RDATA", 5) == 0)
 			{
 				// needed for BFG problem
 				pImgSectHdr->Characteristics = RdataVMCharacteristics;
@@ -4325,7 +4326,7 @@ void CreateDump(HANDLE thisProcess, int dumparmvm)
 				// Minimizing may put back the certificate, remove it again
 				if (SecuritySize)
 				{
-					hFile = CreateFile((LPCSTR)gnfobuffer, // file to create
+					hFile = CreateFile(gnfobuffer, // file to create
 						GENERIC_READ | GENERIC_WRITE,		  // open for read/write
 						FILE_SHARE_READ | FILE_SHARE_WRITE,   // share
 						NULL,				// default security
@@ -4492,7 +4493,7 @@ void DumpSecurityDll(HANDLE thisProcess)
 	}
 	dwSize = pImgOptHdr->SizeOfImage;
 	// Create a dumped dll file of security.dll (security.dll)
-	if (!PutSecurityDllFileName((LPCSTR)savebuffer))
+	if (!PutSecurityDllFileName(savebuffer))
 	{
 		memset(savebuffer, 0, sizeof(savebuffer));
 		return;
@@ -4503,7 +4504,7 @@ void DumpSecurityDll(HANDLE thisProcess)
 	{
 		pszPathName++;
 	}
-	hFile = CreateFile((LPCSTR)savebuffer,     // file to create
+	hFile = CreateFile(savebuffer,     // file to create
 		GENERIC_READ | GENERIC_WRITE,          // open for read/write
 		FILE_SHARE_READ | FILE_SHARE_WRITE,        // share
 		NULL,                   // default security
@@ -4546,7 +4547,7 @@ void LoadSecurityDllFileName(HANDLE thisProcess)
 	HANDLE	hFile5 = 0;
 	dwArmVMAddress = 0;
 	dwArmVMNSize = 0;
-	if (!GetSecurityDllFileName((LPCSTR)armbuffer))
+	if (!GetSecurityDllFileName(armbuffer))
 	{
 		memset(armbuffer, 0, sizeof(armbuffer));
 		return;
@@ -4691,7 +4692,7 @@ BOOL DisassembleDump(void)
 	pNumNanos = 0;
 
 	// Resolve nanomites in saved dumped exe file
-	if (!GetDumpName((LPCSTR)filebuffer))
+	if (!GetDumpName(filebuffer))
 	{
 		memset(filebuffer, 0, sizeof(filebuffer));
 		return FALSE;
@@ -4701,11 +4702,11 @@ BOOL DisassembleDump(void)
 	if (pszPathName)  // We found a path, so advance to the base module name
 	{
 		pszPathName++;
-		strcpy(c, (const char *)pszPathName);
+		strcpy(c, pszPathName);
 	}
 	LogItem("------ Disassembling Dump ------");
 	// Read the saved dump executable file for the PE header data
-	hFile5 = CreateFile((LPCSTR)filebuffer,     // file to create
+	hFile5 = CreateFile(filebuffer,     // file to create
 		GENERIC_READ | GENERIC_WRITE,          // open for read/write
 		FILE_SHARE_READ | FILE_SHARE_WRITE,       // share for read/write
 		NULL,                  // default security
@@ -4975,7 +4976,7 @@ BOOL ResolveDump(void)
 		return FALSE;
 	}
 	// Resolve nanomites in saved dumped exe file
-	if (!GetDumpName((LPCSTR)filebuffer))
+	if (!GetDumpName(filebuffer))
 	{
 		memset(filebuffer, 0, sizeof(filebuffer));
 		return FALSE;
@@ -4989,7 +4990,7 @@ BOOL ResolveDump(void)
 	}
 	LogItem("------ Resolving Nanomites ------");
 	// Read the saved dump executable file for the PE header data
-	hFile5 = CreateFile((LPCSTR)filebuffer,     // file to create
+	hFile5 = CreateFile(filebuffer,     // file to create
 		GENERIC_READ | GENERIC_WRITE,          // open for read/write
 		FILE_SHARE_READ | FILE_SHARE_WRITE,       // share for read/write
 		NULL,                  // default security
@@ -5356,7 +5357,7 @@ BOOL ResolveProcess(HANDLE thisProcess)
 			// Assemble the command above. First try form with 32-bit immediate.
 			// Ex: pasm="JZ 004040BF";
 			j = 0;
-			j = Assemble(pasm, RNano[i].Address, &am, 0, 0, (char *)errtext);
+			j = Assemble(pasm, RNano[i].Address, &am, 0, 0, errtext);
 			if (j <= 0)
 			{
 				// We have an error! bypass this nanomite address
@@ -5482,14 +5483,14 @@ static DWORD DebugQueryProcessOptions(HANDLE hProcess)
 	static NTQUERYINFORMATIONPROCESS g_NtQueryInformationProcess = 0;
 	if (g_NtQueryInformationProcess == 0)
 	{
-		hNTModule = GetModuleHandle((LPCSTR)"ntdll.dll");
+		hNTModule = GetModuleHandle("ntdll.dll");
 		if (!hNTModule)
 		{
 			LogItem("Module: ntdll.dll; Function: GetModuleHandle Failed");
 			return GetLastError();
 		}
 		g_NtQueryInformationProcess =
-			(NTQUERYINFORMATIONPROCESS)GetProcAddress(hNTModule, (LPCSTR)"NtQueryInformationProcess");
+			(NTQUERYINFORMATIONPROCESS)GetProcAddress(hNTModule, "NtQueryInformationProcess");
 		if (!g_NtQueryInformationProcess)
 		{
 			LogItem("GetProcAddress Failed; NtQueryInformationProcess");
@@ -5505,14 +5506,14 @@ static DWORD DebugSetProcessOptions(HANDLE hProcess)
 	static NTSETINFORMATIONPROCESS g_NtSetInformationProcess = 0;
 	if (g_NtSetInformationProcess == 0)
 	{
-		hNTModule = GetModuleHandle((LPCSTR)"ntdll.dll");
+		hNTModule = GetModuleHandle("ntdll.dll");
 		if (!hNTModule)
 		{
 			LogItem("Module: ntdll.dll; Function: GetModuleHandle Failed");
 			return GetLastError();
 		}
 		g_NtSetInformationProcess =
-			(NTSETINFORMATIONPROCESS)GetProcAddress(hNTModule, (LPCSTR)"NtSetInformationProcess");
+			(NTSETINFORMATIONPROCESS)GetProcAddress(hNTModule, "NtSetInformationProcess");
 		if (!g_NtSetInformationProcess)
 		{
 			LogItem("GetProcAddress Failed; NtSetInformationProcess");
@@ -6574,7 +6575,7 @@ BOOL DetermineIATElimination(HANDLE thisProcess, int errmode)
 		sprintf(b + 4, "%p", IATELIMREAD);
 		sprintf(b + 12, "%02X", ENDSTRING);
 		ZeroMemory(&hextext, sizeof(hextext));
-		memcpy(hextext, (unsigned char *)b, 14);
+		memcpy(hextext, b, 14);
 		// Search for the 1st occurrences of IATELIMREAD DWORD
 		// This s/b the first CMP instruction
 		// Turn off Wildcards
@@ -7065,8 +7066,8 @@ BOOL GetOSDisplayString(LPSTR pszOS)
 	// Call GetNativeSystemInfo if supported or GetSystemInfo otherwise.
 
 	pGNSI = (PGNSI)GetProcAddress(
-		GetModuleHandleA((LPCSTR)"kernelbase.dll"),
-		(LPCSTR)"GetNativeSystemInfo");
+		GetModuleHandleA("kernelbase.dll"),
+		"GetNativeSystemInfo");
 	if (NULL != pGNSI)
 		pGNSI(&si);
 	else GetSystemInfo(&si);
@@ -7482,7 +7483,7 @@ BOOL GetNeededAPIs(HANDLE thisprocess)
 {
 	// Find additional API's to set SWBP addresses
 	// Get a handle to the dll's we want
-	hModule = GetModuleHandleA((LPCSTR)"kernel32.dll");
+	hModule = GetModuleHandleA("kernel32.dll");
 	if (!hModule)
 	{
 		LogItem("Module: kernel32.dll; Function: GetModuleHandle Failed");
@@ -7490,7 +7491,7 @@ BOOL GetNeededAPIs(HANDLE thisprocess)
 		return FALSE;
 	}
 	// Find the proc address to the function we want
-	ProcAddr1 = (FARPROC)GetProcAddress(hModule, (LPCSTR)"VirtualAlloc");
+	ProcAddr1 = (FARPROC)GetProcAddress(hModule, "VirtualAlloc");
 	if (!ProcAddr1)
 	{
 		LogItem("Function: VirtualAlloc; kernel32.DLL: GetProcAddress Failed");
@@ -7512,7 +7513,7 @@ BOOL GetNeededAPIs(HANDLE thisprocess)
 		}
 	}
 	// Find the proc address to the function we want
-	ProcAddr2 = (FARPROC)GetProcAddress(hModule, (LPCSTR)"CreateFileA");
+	ProcAddr2 = (FARPROC)GetProcAddress(hModule, "CreateFileA");
 	if (!ProcAddr2)
 	{
 		LogItem("Function: CreateFileA; kernel32.dll: GetProcAddress Failed");
@@ -7534,7 +7535,7 @@ BOOL GetNeededAPIs(HANDLE thisprocess)
 		}
 	}
 	// Find the proc address to the function we want
-	ProcAddr3 = (FARPROC)GetProcAddress(hModule, (LPCSTR)"WriteProcessMemory");
+	ProcAddr3 = (FARPROC)GetProcAddress(hModule, "WriteProcessMemory");
 	if (!ProcAddr3)
 	{
 		LogItem("Function: WriteProcessMemory; kernel32.dll: GetProcAddress Failed");
@@ -7556,7 +7557,7 @@ BOOL GetNeededAPIs(HANDLE thisprocess)
 		}
 	}
 	// Find the proc address to the function we want
-	ProcAddr4 = (FARPROC)GetProcAddress(hModule, (LPCSTR)"GetModuleHandleA");
+	ProcAddr4 = (FARPROC)GetProcAddress(hModule, "GetModuleHandleA");
 	if (!ProcAddr4)
 	{
 		LogItem("Function: GetModuleHandleA; kernel32.dll: GetProcAddress Failed");
@@ -7580,7 +7581,7 @@ BOOL GetNeededAPIs(HANDLE thisprocess)
 	// Find the proc address to the function we want
 	ProcAddr5 = (FARPROC)GetProcAddress(GetModuleHandleA("kernelbase.dll"), "WaitForDebugEvent");
 	if (!ProcAddr5)
-		ProcAddr5 = (FARPROC)GetProcAddress(hModule, (LPCSTR)"WaitForDebugEvent");
+		ProcAddr5 = (FARPROC)GetProcAddress(hModule, "WaitForDebugEvent");
 	if (!ProcAddr5)
 	{
 		LogItem("Function: WaitForDebugEvent; kernel32.dll: GetProcAddress Failed");
@@ -7627,7 +7628,7 @@ BOOL GetNeededAPIs(HANDLE thisprocess)
 		}
 	}
 	// Find the proc address to the function we want
-	ProcAddr6 = (FARPROC)GetProcAddress(hModule, (LPCSTR)"CreateThread");
+	ProcAddr6 = (FARPROC)GetProcAddress(hModule, "CreateThread");
 	if (!ProcAddr6)
 	{
 		LogItem("Function: CreateThread; kernel32.dll: GetProcAddress Failed");
@@ -7649,7 +7650,7 @@ BOOL GetNeededAPIs(HANDLE thisprocess)
 		}
 	}
 	// Find the proc address to the function we want
-	ProcAddr7 = (FARPROC)GetProcAddress(hModule, (LPCSTR)"OutputDebugStringA");
+	ProcAddr7 = (FARPROC)GetProcAddress(hModule, "OutputDebugStringA");
 	if (!ProcAddr7)
 	{
 		LogItem("Function: OutputDebugStringA; kernel32.dll: GetProcAddress Failed");
@@ -7681,7 +7682,7 @@ BOOL GetNeededAPIs(HANDLE thisprocess)
 	if (checkformutex)
 	{
 		// Find the proc address to the function we want
-		ProcAddr8 = (FARPROC)GetProcAddress(hModule, (LPCSTR)"OpenMutexA");
+		ProcAddr8 = (FARPROC)GetProcAddress(hModule, "OpenMutexA");
 		if (!ProcAddr8)
 		{
 			LogItem("Function: OpenMutexA; kernel32.dll: GetProcAddress Failed");
@@ -7711,7 +7712,7 @@ BOOL GetNeededAPIs(HANDLE thisprocess)
 		}
 	}
 	// Find the proc address to the function we want
-	ProcAddr12 = (FARPROC)GetProcAddress(hModule, (LPCSTR)"CreateFileMappingA");
+	ProcAddr12 = (FARPROC)GetProcAddress(hModule, "CreateFileMappingA");
 	if (!ProcAddr12)
 	{
 		LogItem("Function: CreateFileMappingA; kernel32.dll: GetProcAddress Failed");
@@ -7733,7 +7734,7 @@ BOOL GetNeededAPIs(HANDLE thisprocess)
 		}
 	}
 	// Find the proc address to the function we want
-	ProcAddr13 = (FARPROC)GetProcAddress(hModule, (LPCSTR)"GetModuleFileNameA");
+	ProcAddr13 = (FARPROC)GetProcAddress(hModule, "GetModuleFileNameA");
 	if (!ProcAddr13)
 	{
 		LogItem("Function: GetModuleFileNameA; kernel32.dll: GetProcAddress Failed");
@@ -7757,14 +7758,14 @@ BOOL GetNeededAPIs(HANDLE thisprocess)
 	if (isdll)
 	{
 		// Find the proc address to the function we want
-		hNTModule = GetModuleHandleA((LPCSTR)"ntdll.dll");
+		hNTModule = GetModuleHandleA("ntdll.dll");
 		if (!hNTModule)
 		{
 			LogItem("Module: ntdll.dll; Function: GetModuleHandle Failed");
 			LogItem(NULL);
 			return FALSE;
 		}
-		ProcAddr9 = (FARPROC)GetProcAddress(hNTModule, (LPCSTR)"LdrLoadDll");
+		ProcAddr9 = (FARPROC)GetProcAddress(hNTModule, "LdrLoadDll");
 		if (!ProcAddr9)
 		{
 			LogItem("Function: LdrLoadDll; NTDLL.DLL: GetProcAddress Failed");
@@ -7868,8 +7869,8 @@ unsigned __stdcall RunExe(void *)
 	if (pszPathName)  // We found a path, so advance to the base module name
 	{
 		pszPathName++;
-		strcpy(ibuf, (const char *)pszPathName);
-		strcpy(pszDllName, (const char *)pszPathName);
+		strcpy(ibuf, pszPathName);
+		strcpy(pszDllName, pszPathName);
 		strncpy((char *)pszPathName, "\0", 1);
 	}
 	// Find .dll string in buffer
@@ -7930,14 +7931,14 @@ unsigned __stdcall RunExe(void *)
 		strcat(cmdbuffer, dbuf);
 		// Start the child process.
 		if (!CreateProcess(NULL, // If no module name (use command line).
-			(LPSTR)cmdbuffer, 	// Command line.
+			cmdbuffer, 	        // Command line.
 			NULL,             	// Process handle not inheritable.
 			NULL,             	// Thread handle not inheritable.
 			FALSE,            	// Set handle inheritance to FALSE.
 			DEBUG_PROCESS + DEBUG_ONLY_THIS_PROCESS,     	// Single Process Target.
 			NULL,             	// Use parent's environment block.
-			(LPCSTR)nbuf,       // Use Start in folder directory of target debugee process
-			(LPSTARTUPINFO)&si, // Pointer to STARTUPINFO structure.
+			nbuf,               // Use Start in folder directory of target debugee process
+			&si,                // Pointer to STARTUPINFO structure.
 			&pi))             	// Pointer to PROCESS_INFORMATION structure.
 		{
 			LogItem("Create Process Failed! Missing or Invalid target dll");
@@ -7968,15 +7969,15 @@ unsigned __stdcall RunExe(void *)
 			sznewCmdline = (LPTSTR)sztempbuffer;
 		}
 		// Start the child process.
-		if (!CreateProcess(szCmdline != 0 ? NULL : (LPCSTR)buffer, // If no module name (use command line).
+		if (!CreateProcess(szCmdline != 0 ? NULL : buffer, // If no module name (use command line).
 			sznewCmdline,		// Command line.
 			NULL,             	// Process handle not inheritable.
 			NULL,             	// Thread handle not inheritable.
 			FALSE,            	// Set handle inheritance to FALSE.
 			DEBUG_PROCESS + DEBUG_ONLY_THIS_PROCESS,     	// Single Process Target.
 			NULL,             	// Use parent's environment block.
-			(LPCSTR)nbuf,       // Use Start in folder directory of target debugee process
-			(LPSTARTUPINFO)&si, // Pointer to STARTUPINFO structure.
+			nbuf,               // Use Start in folder directory of target debugee process
+			&si,                // Pointer to STARTUPINFO structure.
 			&pi))             	// Pointer to PROCESS_INFORMATION structure.
 		{
 			LogItem("Create Process Failed! Missing or Invalid target executable");
@@ -8013,7 +8014,7 @@ unsigned __stdcall RunExe(void *)
 			}
 			if (checkcm2)
 			{
-				if (MessageBox(NULL, (LPCSTR)"Resolve nanomites before continuing?", "ArmaGeddon",
+				if (MessageBox(NULL, "Resolve nanomites before continuing?", "ArmaGeddon",
 					MB_OKCANCEL + MB_SYSTEMMODAL + MB_ICONINFORMATION) == IDCANCEL)
 				{
 					//continue
@@ -8359,7 +8360,7 @@ unsigned __stdcall RunExe(void *)
 												PvoidRead <= (PVOID)((DWORD_PTR)Text1VMaddress + Text1VMsize))
 											{
 												// Find the proc address to the function we want
-												ProcAddr10 = (FARPROC)GetProcAddress(hModule, (LPCSTR)"DebugActiveProcessStop");
+												ProcAddr10 = (FARPROC)GetProcAddress(hModule, "DebugActiveProcessStop");
 												if (!ProcAddr10)
 												{
 													LogItem("Function: DebugActiveProcessStop");
@@ -8425,7 +8426,7 @@ unsigned __stdcall RunExe(void *)
 														sprintf(ccmd, "%s %s", cjumptype, cjumpdest);
 														pasm = ccmd;
 														memset(&am, 0, sizeof(am));
-														j = Assemble(pasm, DwordRead, &am, 0, 0, (char *)errtext);
+														j = Assemble(pasm, DwordRead, &am, 0, 0, errtext);
 													}
 													else
 													{
@@ -9549,7 +9550,7 @@ unsigned __stdcall RunExe(void *)
 														"%s\n"
 														"%s", c,
 														OEPVAddress, OEPRVAddress, d, e);
-													if (!autorun && MessageBox(NULL, (LPCSTR)b, "Ready to dump!", MB_OKCANCEL + MB_SYSTEMMODAL + MB_ICONINFORMATION) == IDCANCEL)
+													if (!autorun && MessageBox(NULL, b, "Ready to dump!", MB_OKCANCEL + MB_SYSTEMMODAL + MB_ICONINFORMATION) == IDCANCEL)
 													{
 														goto CHECK;
 													}
@@ -10663,7 +10664,7 @@ unsigned __stdcall RunExe(void *)
 								"%s\n"
 								"%s", c,
 								OEPVAddress, OEPRVAddress, d, e);
-							if (MessageBox(NULL, (LPCSTR)b, "Ready to dump!", MB_OKCANCEL + MB_SYSTEMMODAL + MB_ICONINFORMATION) == IDCANCEL)
+							if (MessageBox(NULL, b, "Ready to dump!", MB_OKCANCEL + MB_SYSTEMMODAL + MB_ICONINFORMATION) == IDCANCEL)
 							{
 								goto CHECK1;
 							}
@@ -10971,7 +10972,7 @@ int APIENTRY WinMain(HINSTANCE hinst, HINSTANCE hinstPrev, LPSTR lpCmdLine, int 
 	wc.hInstance = hinst;
 	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
 	wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-	wc.lpszClassName = (LPCSTR)"ARMA_GEDDON";
+	wc.lpszClassName = "ARMA_GEDDON";
 	RegisterClass(&wc);
 	memset(&cc, 0, sizeof(cc));
 	cc.dwSize = sizeof(cc);
@@ -11254,7 +11255,7 @@ LRESULT CALLBACK NanoProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 				default:
 					break;
 				}
-				lvin.pszText = (LPSTR)c;
+				lvin.pszText = c;
 				ListView_SetItemText(hwndList, i, l, lvin.pszText);
 			}
 		}
@@ -11279,8 +11280,8 @@ application needs to do here.
 */
 LRESULT CALLBACK DialogProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-	PAINTSTRUCT ps;
-	RECT rc;
+	//PAINTSTRUCT ps;
+	//RECT rc;
 	POINT pt;
 	switch (msg)
 	{
@@ -11346,7 +11347,7 @@ LRESULT CALLBACK DialogProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam
 		lvc.fmt = LVCFMT_LEFT;
 		lvc.cx = Rect.right - Rect.left;	//  Make bar width of window
 		lvc.cx -= GetSystemMetrics(SM_CXVSCROLL);	// less scrollbar
-		lvc.pszText = (LPSTR)"";
+		lvc.pszText = "";
 		lvc.iSubItem = 0;                   //  Add display column (for Report View)
 		ListView_InsertColumn(hwndIDLISTVIEW, 0, &lvc);
 		// Update Listview for progress
@@ -11436,12 +11437,12 @@ LRESULT CALLBACK DialogProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam
 		for (int i = 0; i < nFiles; i++)
 		{
 			memset(buffer, 0, sizeof(buffer));
-			if (DragQueryFile(hDrop, i, (LPSTR)buffer, MAX_PATH))
+			if (DragQueryFile(hDrop, i, buffer, sizeof(buffer)))
 			{
 				// Send a Refresh button click message if user wants to reopen a target
 				if (hThread)
 				{
-					if (MessageBox(NULL, (LPCSTR)"Start a new session?", "ArmaGeddon",
+					if (MessageBox(NULL, "Start a new session?", "ArmaGeddon",
 						MB_OKCANCEL + MB_SYSTEMMODAL + MB_ICONINFORMATION) == IDCANCEL)
 					{
 						return 0;
@@ -11452,7 +11453,7 @@ LRESULT CALLBACK DialogProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam
 						SendMessage(hwndDlg, WM_COMMAND, MAKEWPARAM(uiID, BN_CLICKED), (LPARAM)hwnd32);
 					}
 				}
-				stdlen = GetDlgItemText(hwndDlg, IDC_STANDARD, (LPSTR)stdfpbuf, sizeof(stdfpbuf));
+				stdlen = GetDlgItemText(hwndDlg, IDC_STANDARD, stdfpbuf, sizeof(stdfpbuf));
 				strupr(stdfpbuf);
 				if (stdlen == 0)
 				{
@@ -11474,7 +11475,7 @@ LRESULT CALLBACK DialogProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam
 					}
 					else
 					{
-						SetDlgItemText(hwndDlg, IDC_STANDARD, (LPSTR)stdfpbuf);
+						SetDlgItemText(hwndDlg, IDC_STANDARD, stdfpbuf);
 						if (stdfpbuf[0] != '0' || stdfpbuf[1] != '0' ||
 							stdfpbuf[2] != '0' || stdfpbuf[3] != '0' ||
 							stdfpbuf[5] != '0' || stdfpbuf[6] != '0' ||
@@ -11507,7 +11508,7 @@ LRESULT CALLBACK DialogProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam
 						}
 					}
 				}
-				enhlen = GetDlgItemText(hwndDlg, IDC_ENHANCED, (LPSTR)enhfpbuf, sizeof(enhfpbuf));
+				enhlen = GetDlgItemText(hwndDlg, IDC_ENHANCED, enhfpbuf, sizeof(enhfpbuf));
 				strupr(enhfpbuf);
 				if (enhlen == 0)
 				{
@@ -11529,7 +11530,7 @@ LRESULT CALLBACK DialogProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam
 					}
 					else
 					{
-						SetDlgItemText(hwndDlg, IDC_ENHANCED, (LPSTR)enhfpbuf);
+						SetDlgItemText(hwndDlg, IDC_ENHANCED, enhfpbuf);
 						if (enhfpbuf[0] != '0' || enhfpbuf[1] != '0' ||
 							enhfpbuf[2] != '0' || enhfpbuf[3] != '0' ||
 							enhfpbuf[5] != '0' || enhfpbuf[6] != '0' ||
@@ -11584,7 +11585,7 @@ LRESULT CALLBACK DialogProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam
 			// Send a Refresh button click message if user wants to reopen a target
 			if (hThread)
 			{
-				if (MessageBox(NULL, (LPCSTR)"Start a new session?", "ArmaGeddon",
+				if (MessageBox(NULL, "Start a new session?", "ArmaGeddon",
 					MB_OKCANCEL + MB_SYSTEMMODAL + MB_ICONINFORMATION) == IDCANCEL)
 				{
 					return 0;
@@ -11705,7 +11706,7 @@ LRESULT CALLBACK DialogProc(HWND hwndDlg, UINT msg, WPARAM wParam, LPARAM lParam
 					}
 				}
 			}
-			if (autorun || GetFileName((LPCSTR)buffer))
+			if (autorun || GetFileName(buffer))
 			{
 				hThread = (HANDLE)_beginthreadex(NULL, 0, &RunExe, NULL, 0, &dwThreadid);
 				if (!hThread)
