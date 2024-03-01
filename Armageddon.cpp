@@ -1386,7 +1386,7 @@ BOOL SaveNano(void)
 		return FALSE;
 	}
 	// Find the last '\\' to obtain a pointer to just the base module name part
-	pszPathName = strrchr((char *)nanobuffer, '\\');
+	pszPathName = strrchr(nanobuffer, '\\');
 	if (pszPathName)  // We found a path, so advance to the base module name
 	{
 		pszPathName++;
@@ -2786,7 +2786,7 @@ void SaveLogfile(void)
 	int		iStatus = 0;
 	memcpy(logbuffer, buffer, sizeof(logbuffer));
 	// Find the last '\\' to obtain a pointer to just the base module name part
-	pszPathName = strrchr((char *)logbuffer, '\\');
+	pszPathName = strrchr(logbuffer, '\\');
 	if (pszPathName)  // We found a path, so advance to the base module name
 	{
 		pszPathName++;
@@ -2844,7 +2844,7 @@ BOOL LoadNanoAnf(void)
 		return FALSE;
 	}
 	// Find the last '\\' to obtain a pointer to just the base module name part
-	pszPathName = strrchr((char *)nanobuffer, '\\');
+	pszPathName = strrchr(nanobuffer, '\\');
 	if (pszPathName)  // We found a path, so advance to the base module name
 	{
 		pszPathName++;
@@ -3613,7 +3613,7 @@ BOOL DetermineArmSections(HANDLE thisProcess)
 		return FALSE;
 	}
 	// Find the last '\\' to obtain a pointer to just the base module name part
-	pszPathName = strrchr((char *)buffer, '\\');
+	pszPathName = strrchr(buffer, '\\');
 	if (pszPathName)  // We found a path, so advance to the base module name
 	{
 		pszPathName++;
@@ -4125,7 +4125,7 @@ void CreateDump(HANDLE thisProcess, int dumparmvm)
 		return;
 	}
 	// Find the last '\\' to obtain a pointer to just the base module name part
-	pszPathName = strrchr((char *)savebuffer, '\\');
+	pszPathName = strrchr(savebuffer, '\\');
 	if (pszPathName)  // We found a path, so advance to the base module name
 	{
 		pszPathName++;
@@ -4498,7 +4498,7 @@ void DumpSecurityDll(HANDLE thisProcess)
 		return;
 	}
 	// Find the last '\\' to obtain a pointer to just the base module name part
-	pszPathName = strrchr((char *)savebuffer, '\\');
+	pszPathName = strrchr(savebuffer, '\\');
 	if (pszPathName)  // We found a path, so advance to the base module name
 	{
 		pszPathName++;
@@ -4697,7 +4697,7 @@ BOOL DisassembleDump(void)
 		return FALSE;
 	}
 	// Find the last '\\' to obtain a pointer to just the base module name part
-	pszPathName = strrchr((char *)filebuffer, '\\');
+	pszPathName = strrchr(filebuffer, '\\');
 	if (pszPathName)  // We found a path, so advance to the base module name
 	{
 		pszPathName++;
@@ -7864,7 +7864,7 @@ unsigned __stdcall RunExe(void *)
 	// Create New Start in Folder for target executable based on buffer returned in Open dialog
 	memcpy(nbuf, buffer, (size_t)MAX_PATH);
 	// Find the last '\\' to obtain a pointer to just the base module name part
-	pszPathName = strrchr((char *)nbuf, '\\');
+	pszPathName = strrchr(nbuf, '\\');
 	if (pszPathName)  // We found a path, so advance to the base module name
 	{
 		pszPathName++;
@@ -7875,7 +7875,7 @@ unsigned __stdcall RunExe(void *)
 	// Find .dll string in buffer
 	memcpy(dbuf, buffer, (size_t)MAX_PATH);
 	// find '.' to obtain a pointer to the extension
-	pszBaseExt = strrchr((char *)dbuf, '.');
+	pszBaseExt = strrchr(dbuf, '.');
 	if (pszBaseExt) 	// We found a '.'
 	{
 		pszBaseExt++;
@@ -7901,7 +7901,7 @@ unsigned __stdcall RunExe(void *)
 		// Copy pathname to our dll loader.exe buffer
 		memcpy(cmdbuffer, Filename, (size_t)MAX_PATH);
 		// Find the last '\\' to obtain a pointer to just the base module name part
-		pszPathName = strrchr((char *)cmdbuffer, '\\');
+		pszPathName = strrchr(cmdbuffer, '\\');
 		if (pszPathName)  // We found a path, so advance to the base module name
 		{
 			pszPathName++;
